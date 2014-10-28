@@ -187,7 +187,7 @@ class Dhcp(Sanji):
                 if item["id"] == data["id"]:
                     # self.collectionIndex = index
                     db_data = self.model.db["collection"]
-                    # update db data by dictionary add 
+                    # update db data by dictionary add
                     db_data[index] = dict(db_data[index].items() +
                                           data.items())
         except Exception as e:
@@ -198,8 +198,8 @@ class Dhcp(Sanji):
     def get_ifcg_interface(self):
         try:
             interfaces = os.listdir("/sys/class/net")
-            #interfaces = [x for x in interfaces if x != "lo"]
-            return interfaces
+            rc_interface = [x for x in interfaces if x != "lo"]
+            return rc_interface
         except Exception as e:
             logger.info("cannot get interfaces: %s" % e)
 
