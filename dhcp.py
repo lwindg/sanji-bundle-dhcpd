@@ -60,6 +60,7 @@ class Dhcp(Sanji):
 
     @Route(methods="get", resource="/network/dhcp")
     def get(self, message, response):
+        print ("message.query: %s" % message.query)
         if "collection" in message.query:
             # /network/dhcp?collection=true
             if message.query["collection"] == "true":
@@ -75,7 +76,7 @@ class Dhcp(Sanji):
                                       "serverStatus":
                                       self.model.db["serverStatus"],
                                       "collection": self.rsp["data"]})
-        return response(code=400, data={"message": "Invaild Input"})
+            return response(code=400, data={"message": "Invaild Input"})
 
         # capability
         id_list = []
@@ -91,7 +92,7 @@ class Dhcp(Sanji):
             # check interface exist in ifconfig and db
             if item["id"] == message.param["id"] and item["id"] in iface_list:
                 return response(data=item)
-        return response(code=400, data={"message": "Invaild Input"})
+        return response(code=400, data={"message": "Invaild ID"})
 
     @Route(methods="put", resource="/network/dhcp/:id")
     def put_id(self, message, response):
@@ -149,6 +150,9 @@ class Dhcp(Sanji):
     @Route(methods="put", resource="/network/ethernet/:id")
     def hook(self, message, response):
         # get ethernet interface name
+        if "name" not in message.data:
+            return response(code=400, data={"message": "DHCP server hook:\
+                                            ethernet didn't has name data"})
         id = message.data["name"]
         logger.info("DHCP server is restarting.\
                      Due to %s setting had been chanaged" % id)
