@@ -55,7 +55,8 @@ class Dhcp(Sanji):
                 break
             retry_cnt = retry_cnt + 1
             time.sleep(1)
-        logger.info("DHCP server initialize failed")
+        if retry_cnt == 5:
+            logger.info("DHCP server initialize failed")
 
     @Route(methods="get", resource="/network/dhcp")
     def get(self, message, response):
