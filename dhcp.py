@@ -25,7 +25,7 @@ class Dhcp(Sanji):
         self.model = ModelInitiator("dhcp", path_root)
         self.permittedId = ["eth0"]
         self.permittedKeys = ["id", "enable", "subnet", "netmask", "startIP",
-                              "endIP", "dns1", "dns2", "dns3",
+                              "endIP", "dns1", "dns2", "dns3", "name",
                               "domainName", "leaseTime"]
         self.rsp = {}
         self.rsp["code"] = 0
@@ -68,28 +68,25 @@ class Dhcp(Sanji):
                 for item in self.model.db["collection"]:
                     # /network/dhcp/:id
                     # check interface exist in ifconfig
-                    if item["id"] in iface_list:
+                    if item["name"] in iface_list:
                         self.rsp["data"].append(item)
-                return response(data={"serverEnable":
-                                      self.model.db["serverEnable"],
-                                      "serverStatus":
-                                      self.model.db["serverStatus"],
+                return response(data={"currentStatus":
+                                      self.model.db["currentStatus"],
                                       "collection": self.rsp["data"]})
             return response(code=400, data={"message": "Invaild Input"})
-
-        # capability
-        id_list = []
-        for item in self.model.db["collection"]:
-            id_list.append(item["id"])
-        return response(data=id_list)
+        else:
+            # default is collection=true, return all db data
+            return response(data=self.model.db)
 
     @Route(methods="get", resource="/network/dhcp/:id")
     def get_id(self, message, response):
         iface_list = self.get_ifcg_interface()
         for item in self.model.db["collection"]:
+            print ("item: %s" % item)
             # /network/dhcp/:id
             # check interface exist in ifconfig and db
-            if item["id"] == message.param["id"] and item["id"] in iface_list:
+            if (item["id"] == int(message.param["id"])) and \
+               item["name"] in iface_list:
                 return response(data=item)
         return response(code=400, data={"message": "Invaild ID"})
 

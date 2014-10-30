@@ -1,9 +1,8 @@
 {
-	"serverEnable": 0,
-	"serverStatus": 0,
+	"currentStatus": 0,
 	"collection": [
 		{
-			"id": "eth0",
+			"id": 1,
 			"enable": 0,
 			"subnet": "",
 			"netmask": "",
@@ -12,6 +11,7 @@
 			"dns1": "",
 			"dns2": "",
 			"dns3": "",
+			"name": "eth0",
 			"domainName": "",
 			"leaseTime": "3600"
 		}
