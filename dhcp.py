@@ -23,7 +23,7 @@ class Dhcp(Sanji):
 
     def init(self, *args, **kwargs):
         self.model = ModelInitiator("dhcp", path_root)
-        self.permittedId = ["eth0"]
+        self.permittedName = ["eth0"]
         self.permittedKeys = ["id", "enable", "subnet", "netmask", "startIP",
                               "endIP", "dns1", "dns2", "dns3", "name",
                               "domainName", "leaseTime"]
@@ -82,7 +82,6 @@ class Dhcp(Sanji):
     def get_id(self, message, response):
         iface_list = self.get_ifcg_interface()
         for item in self.model.db["collection"]:
-            print ("item: %s" % item)
             # /network/dhcp/:id
             # check interface exist in ifconfig and db
             if (item["id"] == int(message.param["id"])) and \
@@ -96,51 +95,30 @@ class Dhcp(Sanji):
             return response(code=400, data={"message": "Invaild Input"})
         self.message = message.data
         logger.debug("self.msaage: %s" % self.message)
-        id = self.message["id"]
+        put_name = self.message["name"]
         # check id
-        if id in self.permittedId:
+        if put_name in self.permittedName:
             # update db by put data
             update_rc = self.update_db(message)
             self.model.save_db()
             if update_rc is not True:
                 return response(code=400, data={"message": "Update DB error"})
-
-            if self.model.db["serverEnable"] == 0:
-                # stop DHCP server
-                stop_rc = self.dhcp_stop()
-                if stop_rc is True:
-                    # set serverStatus = 0
-                    self.model.db["serverStatus"] = 0
-                    # save to db
-                    self.model.save_db()
-                    return response(data=self.model.db)
-                else:
-                    # get dhcp server status and update serverStatus db
-                    status_rc = self.get_status()
-                    if status_rc is True:
-                        self.model.db["serverStatus"] = 1
-                    else:
-                        self.model.db["serverStatus"] = 0
-                    self.model.save_db()
-                    return response(code=400, data={"message":
-                                                    "Stop DHCP server failed"})
-            else:
-                # generate new config
-                update_config_rc = self.update_config_file()
-                if update_config_rc is not True:
-                    return response(code=400, data={"message":
-                                    "Update config error."})
-                # restart model
-                restart_rc = self.dhcp_restart()
-                # check dhcpd process exist
-                status_rc = self.get_status()
-                if restart_rc is False or status_rc is False:
-                    return response(code=400, data={"message":
-                                                    "Restart DHCP failed"})
-                # update current status and save to db
-                self.model.db["serverStatus"] = 1
-                self.model.save_db()
-                return response(data=self.model.db)
+            # update config file
+            update_config_rc = self.update_config_file()
+            if update_config_rc is not True:
+                return response(code=400, data={"message":
+                                "Update config error."})
+            # restart model
+            restart_rc = self.dhcp_restart()
+            # check dhcpd process exist
+            status_rc = self.get_status()
+            if restart_rc is False or status_rc is False:
+                return response(code=400, data={"message":
+                                                "Restart DHCP failed"})
+            # update current status and save to db
+            self.model.db["currentStatus"] = 1
+            self.model.save_db()
+            return response(data=self.model.db)
         return response(code=400, data={"message": "Invaild input ID"})
 
     @Route(methods="put", resource="/network/ethernet/:id")
@@ -170,7 +148,7 @@ class Dhcp(Sanji):
             return response(code=400, data={"message": "DHCP server hook\
                                             ethernet: Restart DHCP failed"})
         # update current status and save to db
-        self.model.db["serverStatus"] = 1
+        self.model.db["currentStatus"] = 1
         self.model.save_db()
         return response(data=self.model.db)
 
@@ -180,8 +158,6 @@ class Dhcp(Sanji):
         logger.debug("update_db data: %s" % data)
         # find id correspond collection data
         try:
-            # assign serverEnable put request data to db
-            self.model.db["serverEnable"] = message.serverEnable
             # assign put request data to db
             for index, item in enumerate(self.model.db["collection"]):
                 # check request data id and db id is match or not
@@ -234,7 +210,7 @@ class Dhcp(Sanji):
             iface_list = self.get_ifcg_interface()
             for item in [v for v in self.model.db["collection"]]:
                 # check if id exist in ifconfig interface or not
-                if item["id"] in iface_list:
+                if item["name"] in iface_list:
                     # check if enable equal to 1 or not
                     if item.get("enable", 0) == 1:
                         dns_list = list()
@@ -246,7 +222,7 @@ class Dhcp(Sanji):
                             dns_list.append(dns)
 
                         # get IP from ifconfig and assign to default route
-                        item["routers"] = self.get_interface_ip(item["id"])
+                        item["routers"] = self.get_interface_ip(item["name"])
 
                         # if dns_list is empty, we don't put option in settings
                         if len(dns_list) != 0:
