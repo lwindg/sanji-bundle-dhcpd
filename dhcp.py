@@ -60,7 +60,6 @@ class Dhcp(Sanji):
 
     @Route(methods="get", resource="/network/dhcp")
     def get(self, message, response):
-        print ("message.query: %s" % message.query)
         if "collection" in message.query:
             # /network/dhcp?collection=true
             if message.query["collection"] == "true":
@@ -151,8 +150,8 @@ class Dhcp(Sanji):
     def hook(self, message, response):
         # get ethernet interface name
         if "name" not in message.data:
-            return response(code=400, data={"message": "DHCP server hook:\
-                                            ethernet didn't has name data"})
+            return response(code=400, data={"message":
+                                            "ethernet name not exist"})
         id = message.data["name"]
         logger.info("DHCP server is restarting.\
                      Due to %s setting had been chanaged" % id)
