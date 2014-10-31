@@ -91,16 +91,15 @@ class Dhcp(Sanji):
     def put_id(self, message, response):
         if not hasattr(message, "data"):
             return response(code=400, data={"message": "Invaild Input"})
-        self.message = message.data
-        logger.debug("self.msaage: %s" % self.message)
+        logger.debug("input message: %s" % message.data)
         # check put id and db collection id is match
         id_match = False
         for item in self.model.db["collection"]:
-            if item["id"] == self.message["id"]:
+            if item["id"] == message.data["id"]:
                 id_match = True
         if id_match is False:
             return response(code=400, data={"message": "Invaild ID"})
-        put_name = self.message["name"]
+        put_name = message.data["name"]
         # check name
         if put_name in self.permittedName:
             # update db by put data
@@ -123,7 +122,7 @@ class Dhcp(Sanji):
             # update current status and save to db
             self.model.db["currentStatus"] = 1
             self.model.save_db()
-            collection_index = self.message["id"] - 1
+            collection_index = message.data["id"] - 1
             return response(data=self.model.db["collection"][collection_index])
         return response(code=400, data={"message": "Invaild input ID"})
 
@@ -159,7 +158,7 @@ class Dhcp(Sanji):
         return response(data=self.model.db)
 
     def update_db(self, message):
-        data = dict((key, value) for key, value in self.message.items()
+        data = dict((key, value) for key, value in message.data.items()
                     if key in self.permittedKeys)
         logger.debug("update_db data: %s" % data)
         # find id correspond collection data
