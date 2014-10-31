@@ -244,6 +244,23 @@ class TestDhcpClass(unittest.TestCase):
             self.assertEqual(data, ANY)
         self.dhcp.hook(message=message, response=resp5, test=True)
 
+    def test_update_db(self):
+        message = Message({"data": {"id": 1, "name": "eth0"},
+                          "query": {}, "param": {"id": 1}})
+
+        rc = self.dhcp.update_db(message=message)
+        self.assertEqual(rc, True)
+
+        # test exception
+        with patch.object(self.dhcp.model, "db") as model_db:
+            model_db.__getitem__.side_effect = Exception("error exception!")
+            self.dhcp.update_db(message)
+
+    def test_get_ifcg_interface(self):
+        with patch.object(os, "listdir") as listdir:
+            listdir.return_value = ["wlan0", "ppp0"]
+            rc = self.dhcp.get_ifcg_interface()
+            self.assertEqual(rc, ["wlan0", "ppp0"])
 
 if __name__ == "__main__":
     logger = logging.getLogger("TestDhcpClass")
