@@ -95,8 +95,15 @@ class Dhcp(Sanji):
             return response(code=400, data={"message": "Invaild Input"})
         self.message = message.data
         logger.debug("self.msaage: %s" % self.message)
+        # check put id and db collection id is match
+        id_match = False
+        for item in self.model.db["collection"]:
+            if item["id"] == self.message["id"]:
+                id_match = True
+        if id_match is False:
+            return response(code=400, data={"message": "Invaild ID"})
         put_name = self.message["name"]
-        # check id
+        # check name
         if put_name in self.permittedName:
             # update db by put data
             update_rc = self.update_db(message)
@@ -118,7 +125,9 @@ class Dhcp(Sanji):
             # update current status and save to db
             self.model.db["currentStatus"] = 1
             self.model.save_db()
-            return response(data=self.model.db)
+            collection_index = self.message["id"] - 1
+            return response(data=
+                            self.model.db["collection"][collection_index])
         return response(code=400, data={"message": "Invaild input ID"})
 
     @Route(methods="put", resource="/network/ethernet/:id")
