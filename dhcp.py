@@ -124,8 +124,7 @@ class Dhcp(Sanji):
             self.model.db["currentStatus"] = 1
             self.model.save_db()
             collection_index = self.message["id"] - 1
-            return response(data=
-                            self.model.db["collection"][collection_index])
+            return response(data=self.model.db["collection"][collection_index])
         return response(code=400, data={"message": "Invaild input ID"})
 
     @Route(methods="put", resource="/network/ethernet/:id")
@@ -133,10 +132,10 @@ class Dhcp(Sanji):
         # get ethernet interface name
         if "name" not in message.data:
             return response(code=400, data={"message":
-                                            "ethernet name not exist"})
-        id = message.data["name"]
+                                            "name not exist"})
+        name = message.data["name"]
         logger.info("DHCP server is restarting.\
-                     Due to %s setting had been chanaged" % id)
+                     Due to %s setting had been chanaged" % name)
         update_rc = self.update_db(dict(id=id, enable=0))
         self.model.save_db()
         if update_rc is not True:

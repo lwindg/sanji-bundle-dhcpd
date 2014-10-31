@@ -10,9 +10,9 @@ import logging
 from sanji.connection.mockup import Mockup
 from sanji.message import Message
 from mock import patch
-from string import Template
+# from string import Template
 # from mock import Mock
-from mock import mock_open
+# from mock import mock_open
 from mock import ANY
 
 logger = logging.getLogger()
@@ -76,135 +76,173 @@ class TestDhcpClass(unittest.TestCase):
     #             log.assert_called_once_with("DHCP server initialize failed")
 
     def test_get(self):
-        # case 1: capability
+        # case 1: collection=true
         message = Message({"data": {"message": "call get()"},
-                          "query": {}, "param": {}})
+                          "query": {"collection": "true"}, "param": {}})
 
-        print ("test get message:%s" % message)  
-        # def resp(code=200, data=None):
-        #     self.assertEqual(code, 200)
-        #     self.assertEqual(data, ["eth0"])
-        # self.dhcp.get(message=message, response=resp, test=True)
+        def resp1(code=200, data=None):
+            self.assertEqual(code, 200)
+            self.assertEqual(data, {"currentStatus": ANY, "collection": ANY})
+        self.dhcp.get(message=message, response=resp1, test=True)
 
-    #     # case 2: collection=true
-    #     message = Message({"data": {"message": "call get()"},
-    #                       "query": {"collection": "true"}, "param": {}})
+        # case 2: collection=false
+        message = Message({"data": {"message": "call get()"},
+                          "query": {"collection": "false"}, "param": {}})
 
-    #     def resp1(code=200, data=None):
-    #         self.assertEqual(code, 200)
-    #         self.assertEqual(data, {"serverEnable": ANY,
-    #                                 "serverStatus": ANY, "collection": ANY})
-    #     self.dhcp.get(message=message, response=resp1, test=True)
+        def resp2(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": "Invaild Input"})
+        self.dhcp.get(message=message, response=resp2, test=True)
 
-    #     # case 3: collection=false
-    #     message = Message({"data": {"message": "call get()"},
-    #                       "query": {"collection": "false"}, "param": {}})
+    def test_get_id(self):
+        # case 1: correct id
+        message = Message({"data": {"message": "call get_id()"},
+                          "query": {}, "param": {"id": 1}})
 
-    #     def resp2(code=200, data=None):
-    #         self.assertEqual(code, 400)
-    #         self.assertEqual(data, {"message": "Invaild Input"})
-    #     self.dhcp.get(message=message, response=resp2, test=True)
+        def resp1(code=200, data=None):
+            self.assertEqual(code, 200)
+            self.assertEqual(data, ANY)
+        self.dhcp.get_id(message=message, response=resp1, test=True)
 
-    # def test_get_id(self):
-    #     # case 1: correct id
-    #     message = Message({"data": {"message": "call get_id()"},
-    #                       "query": {}, "param": {"id": "eth0"}})
+        # case 2: incorrect id
+        message = Message({"data": {"message": "call get_id()"},
+                          "query": {}, "param": {"id": 5566}})
 
-    #     def resp1(code=200, data=None):
-    #         self.assertEqual(code, 200)
-    #         self.assertEqual(data, ANY)
-    #     self.dhcp.get_id(message=message, response=resp1, test=True)
+        def resp2(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": "Invaild ID"})
+        self.dhcp.get_id(message=message, response=resp2, test=True)
 
-    #     # case 2: incorrect id
-    #     message = Message({"data": {"message": "call get_id()"},
-    #                       "query": {}, "param": {"id": "test123"}})
-
-    #     def resp2(code=200, data=None):
-    #         self.assertEqual(code, 400)
-    #         self.assertEqual(data, {"message": "Invaild ID"})
-    #     self.dhcp.get_id(message=message, response=resp2, test=True)
-
-    def test_put_id(self):
+    @patch("dhcp.Dhcp.dhcp_restart")
+    @patch("dhcp.Dhcp.update_config_file")
+    @patch("dhcp.Dhcp.update_db")
+    def test_put_id(self, update_db, update_config_file, dhcp_restart):
         # case 1: message didn't has "data" attribute
-        message = Message({"query": {}, "param": {"id": "eth0"}})
+        message = Message({"query": {}, "param": {"id": 1}})
 
         def resp(code=200, data=None):
             self.assertEqual(code, 400)
             self.assertEqual(data, {"message": "Invaild Input"})
         self.dhcp.put_id(message=message, response=resp, test=True)
 
-        # case 2: update_db = False
-        message = Message({"data": {"id": "eth0"},
+        # case 2: id is error
+        message = Message({"data": {"id": 5566, "name": "eth0"},
                           "query": {}, "param": {"id": "test123"}})
-        with patch("dhcp.Dhcp.update_db") as update_db:
-            update_db.return_value = False
 
-            def resp1(code=200, data=None):
-                self.assertEqual(code, 400)
-                self.assertEqual(data, {"message": "Update DB error"})
-            self.dhcp.put_id(message=message, response=resp1, test=True)
+        def resp1(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": "Invaild ID"})
+        self.dhcp.put_id(message=message, response=resp1, test=True)
 
-        # case 3: serverEnable = 0
+        # case 3: update_db = False
+        message = Message({"data": {"id": 1, "name": "eth0"},
+                          "query": {}, "param": {"id": 1}})
+        update_db.return_value = False
 
-    # def test_hook(self):
-    #     # case 1: message.data didn't has "name" value
-    #     message = Message({"data": {"message": "call hook()"},
-    #                       "query": {}, "param": {}})
+        def resp3(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": "Update DB error"})
+        self.dhcp.put_id(message=message, response=resp3, test=True)
 
-    #     def resp(code=200, data=None):
-    #         self.assertEqual(code, 400)
-    #         self.assertEqual(data, {"message": ANY})
-    #     self.dhcp.hook(message=message, response=resp, test=True)
+        # case 4: update_config_file = False
+        message = Message({"data": {"id": 1, "name": "eth0"},
+                          "query": {}, "param": {"id": 1}})
+        update_config_file.return_value = False
+        update_db.return_value = True
 
-    #     # case 2: update_db = False
-    #     message = Message({"data": {"name": "eth0"},
-    #                       "query": {}, "param": {}})
+        def resp4(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": "Update config error."})
+        self.dhcp.put_id(message=message, response=resp4, test=True)
 
-    #     with patch("dhcp.Dhcp.update_db") as update_db:
-    #         update_db.return_value = False
+        # case 5: dhcp_restart False
+        update_db.return_value = True
+        update_config_file.return_value = True
+        dhcp_restart.return_value = False
 
-    #         def resp1(code=200, data=None):
-    #             self.assertEqual(code, 400)
-    #             self.assertEqual(data, {"message": ANY})
-    #         self.dhcp.hook(message=message, response=resp1, test=True)
+        def resp5(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": "Restart DHCP failed"})
+        self.dhcp.put_id(message=message, response=resp5, test=True)
 
-    #     # case 3: update_db = True
-    #     message = Message({"data": {"name": "eth0"},
-    #                       "query": {}, "param": {}})
+        # case 6: dhcp_restart Success
+        update_db.return_value = True
+        update_config_file.return_value = True
+        dhcp_restart.return_value = True
 
-    #     with patch("dhcp.Dhcp.update_db") as update_db:
-    #         update_db.return_value = True
-    #         # case 3.1: update_config_file = False
-    #         with patch("dhcp.Dhcp.update_config_file") as update_config_file:
-    #             update_config_file.return_value = False
+        def resp6(code=200, data=None):
+            self.assertEqual(code, 200)
+            self.assertEqual(data, ANY)
+        self.dhcp.put_id(message=message, response=resp6, test=True)
 
-    #             def resp2(code=200, data=None):
-    #                 self.assertEqual(code, 400)
-    #                 self.assertEqual(data, {"message": ANY})
-    #             self.dhcp.hook(message=message, response=resp2, test=True)
+        message = Message({"data": {"id": 1, "name": "eth123"},
+                          "query": {}, "param": {"id": 1}})
+        update_db.return_value = False
 
-    #         # case 3.2: update_config_file = True
-    #             update_config_file.return_value = True
+        # case 7: name error
+        def resp7(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": "Invaild input ID"})
+        self.dhcp.put_id(message=message, response=resp7, test=True)
 
-    #             # case 3.2.1 dhcp_restart = False
-    #             with patch("dhcp.Dhcp.dhcp_restart") as dhcp_restart:
-    #                 dhcp_restart.return_value = False
+    @patch("dhcp.Dhcp.get_status")
+    @patch("dhcp.Dhcp.dhcp_restart")
+    @patch("dhcp.Dhcp.update_config_file")
+    @patch("dhcp.Dhcp.update_db")
+    def test_hook(self, update_db, update_config_file,
+                  dhcp_restart, get_status):
+        # case 1: message.data didn't has "name" value
+        message = Message({"data": {"message": "call hook()"},
+                          "query": {}, "param": {}})
 
-    #                 def resp3(code=200, data=None):
-    #                     self.assertEqual(code, 400)
-    #                     self.assertEqual(data, {"message": ANY})
-    #                 self.dhcp.hook(message=message, response=resp3, test=True)
+        def resp(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": ANY})
+        self.dhcp.hook(message=message, response=resp, test=True)
 
-    #             # case 3.2.2 dhcp_restart = True and get_status = True
-    #                 dhcp_restart.return_value = True
-    #                 with patch("dhcp.Dhcp.get_status") as get_status:
-    #                     get_status.return_value = True
+        # case 2: update_db = False
+        message = Message({"data": {"name": "eth0"},
+                          "query": {}, "param": {}})
 
-    #                     def resp4(code=200, data=None):
-    #                         self.assertEqual(code, 200)
-    #                         self.assertEqual(data, ANY)
-    #                     self.dhcp.hook(message=message, response=resp4,
-    #                                    test=True)
+        # with patch("dhcp.Dhcp.update_db") as update_db:
+        update_db.return_value = False
+
+        def resp2(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": ANY})
+        self.dhcp.hook(message=message, response=resp2, test=True)
+
+        # case 3: update_config_file = False
+        message = Message({"data": {"name": "eth0"}, "query": {}, "param": {}})
+
+        update_db.return_value = True
+        # with patch("dhcp.Dhcp.update_config_file") as update_config_file:
+        update_config_file.return_value = False
+
+        def resp3(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": ANY})
+        self.dhcp.hook(message=message, response=resp3, test=True)
+
+        # case 4: dhcp_restart = False
+        update_config_file.return_value = True
+        # with patch("dhcp.Dhcp.dhcp_restart") as dhcp_restart:
+        dhcp_restart.return_value = False
+
+        def resp4(code=200, data=None):
+            self.assertEqual(code, 400)
+            self.assertEqual(data, {"message": ANY})
+        self.dhcp.hook(message=message, response=resp4, test=True)
+
+        # case 5: dhcp_restart = True and get_status = True
+        dhcp_restart.return_value = True
+        # with patch("dhcp.Dhcp.get_status") as get_status:
+        get_status.return_value = True
+
+        def resp5(code=200, data=None):
+            self.assertEqual(code, 200)
+            self.assertEqual(data, ANY)
+        self.dhcp.hook(message=message, response=resp5, test=True)
 
 
 if __name__ == "__main__":
