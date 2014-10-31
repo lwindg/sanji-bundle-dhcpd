@@ -62,21 +62,19 @@ class Dhcp(Sanji):
     def get(self, message, response):
         if "collection" in message.query:
             # /network/dhcp?collection=true
-            if message.query["collection"] == "true":
-                iface_list = self.get_ifcg_interface()
-                self.rsp["data"] = []
-                for item in self.model.db["collection"]:
-                    # /network/dhcp/:id
-                    # check interface exist in ifconfig
-                    if item["name"] in iface_list:
-                        self.rsp["data"].append(item)
-                return response(data={"currentStatus":
-                                      self.model.db["currentStatus"],
-                                      "collection": self.rsp["data"]})
-            return response(code=400, data={"message": "Invaild Input"})
-        else:
-            # default is collection=true, return all db data
-            return response(data=self.model.db)
+            if message.query["collection"] != "true":
+                return response(code=400, data={"message": "Invaild Input"})
+        # default is collection=true, return all db data
+        iface_list = self.get_ifcg_interface()
+        self.rsp["data"] = []
+        for item in self.model.db["collection"]:
+            # /network/dhcp/:id
+            # check interface exist in ifconfig
+            if item["name"] in iface_list:
+                self.rsp["data"].append(item)
+        return response(data={"currentStatus":
+                              self.model.db["currentStatus"],
+                              "collection": self.rsp["data"]})
 
     @Route(methods="get", resource="/network/dhcp/:id")
     def get_id(self, message, response):
