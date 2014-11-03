@@ -356,6 +356,29 @@ class TestDhcpClass(unittest.TestCase):
             rc = self.dhcp.update_config_file()
             self.assertEqual(rc, False)
 
+        # case 3: length of dns is 0
+        get_ifcg_interface.return_value = ["eth0"]
+        self.dhcp.model.db = {"currentStatus": 1, "collection": [
+                             {
+                              "id": 1,
+                              "enable": 1,
+                              "name": "eth0",
+                              "subnet": "192.168.0.0",
+                              "leaseTime": "5566",
+                              "endIP": "192.168.10.50",
+                              "startIP": "192.168.10.10",
+                              "domainName": "MXcloud115",
+                              "domainNameServers":
+                              "option domain-name-servers 8.8.8.8;",
+                              "netmask": "255.255.0.0",
+                              "routers": "192.168.31.115",
+                              }]
+                              }
+        m = mock_open()
+        with patch("dhcp.open", m, create=True):
+            rc = self.dhcp.update_config_file()
+            self.assertEqual(rc, True)
+
     @patch("dhcp.subprocess")
     def test_get_interface_ip(self, subprocess):
         # case 1: subprocess.Popen success
@@ -366,6 +389,8 @@ class TestDhcpClass(unittest.TestCase):
         rc = self.dhcp.get_interface_ip("eth0")
         self.assertEqual(rc, "10.10.10.10")
         # case 2: subprocess.Popen failed
+        subprocess.Popen.side_effect = Exception("error exception!")
+        self.dhcp.get_interface_ip("eth0")
 
     @patch("dhcp.subprocess")
     def test_get_status(self, subprocess):
