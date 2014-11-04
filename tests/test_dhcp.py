@@ -76,10 +76,12 @@ class TestDhcpClass(unittest.TestCase):
                 self.dhcp.model_init()
                 log.assert_called_once_with("DHCP server initialize failed")
 
-    def test_get(self):
+    @patch("dhcp.Dhcp.get_ifcg_interface")
+    def test_get(self, get_ifcg_interface):
         # case 1: collection=true
         message = Message({"data": {"message": "call get()"},
                           "query": {"collection": "true"}, "param": {}})
+        get_ifcg_interface.return_value = ["eth0"]
 
         def resp1(code=200, data=None):
             self.assertEqual(code, 200)
