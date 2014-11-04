@@ -15,9 +15,6 @@ logger = logging.getLogger()
 path_root = os.path.abspath(os.path.dirname(__file__))
 dhcpd_config_path = "/etc/dhcp/dhcpd.conf"
 
-# retry times when model initialize
-retry_times = 5
-
 
 class Dhcp(Sanji):
 
@@ -27,6 +24,9 @@ class Dhcp(Sanji):
         self.permittedKeys = ["id", "enable", "subnet", "netmask", "startIP",
                               "endIP", "dns1", "dns2", "dns3", "name",
                               "domainName", "leaseTime"]
+        # retry times when model initialize
+        self.retry_times = 5
+
         self.rsp = {}
         self.rsp["code"] = 0
         self.rsp["data"] = None
@@ -47,7 +47,7 @@ class Dhcp(Sanji):
     def model_init(self):
         retry_cnt = 0
         # restart dhcp server 5 times
-        while retry_cnt < retry_times:
+        while retry_cnt < self.retry_times:
             # restart model
             restart_rc = self.dhcp_restart()
             if restart_rc is True:
