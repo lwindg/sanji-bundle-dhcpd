@@ -14,13 +14,13 @@
   "role": "model",
   "ttl": 10,
   "resources": [
-  	{
+    {
    "methods": ["get", "put"],
    "resource": "/network/dhcp"
     },
     {
-	 "methods": ["get", "put"],
-	 "resource": "/network/dhcp/:id"
-	  }
+   "methods": ["get", "put"],
+   "resource": "/network/dhcp/:id"
+    }
   ]
 }
