@@ -95,14 +95,33 @@ class TestDhcpClass(unittest.TestCase):
             self.assertEqual(data, {"message": "Invaild Input"})
         self.dhcp.get(message=message, response=resp2, test=True)
 
-    def test_get_id(self):
+    @patch("dhcp.Dhcp.get_ifcg_interface")
+    def test_get_id(self, get_ifcg_interface):
         # case 1: correct id
         message = Message({"data": {"message": "call get_id()"},
                           "query": {}, "param": {"id": 1}})
+        get_ifcg_interface.return_value = ["eth0"]
+        self.dhcp.model.db = {"currentStatus": 1, "collection": [
+                             {
+                              "id": 1,
+                              "enable": 1,
+                              "name": "eth0",
+                              "subnet": "192.168.0.0",
+                              "leaseTime": "5566",
+                              "endIP": "192.168.10.50",
+                              "startIP": "192.168.10.10",
+                              "domainName": "MXcloud115",
+                              "domainNameServers":
+                              "option domain-name-servers 8.8.8.8;",
+                              "netmask": "255.255.0.0",
+                              "routers": "192.168.31.115",
+                              }]
+                              }
 
         def resp1(code=200, data=None):
             self.assertEqual(code, 200)
             self.assertEqual(data, ANY)
+        print ("self model db:%s" % self.dhcp.model.db)
         self.dhcp.get_id(message=message, response=resp1, test=True)
 
         # case 2: incorrect id
