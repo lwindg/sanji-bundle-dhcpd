@@ -78,24 +78,15 @@ class TestDhcpClass(unittest.TestCase):
 
     @patch("dhcp.Dhcp.get_ifcg_interface")
     def test_get(self, get_ifcg_interface):
-        # case 1: collection=true
+        # case 1: default collection=true
         message = Message({"data": {"message": "call get()"},
-                          "query": {"collection": "true"}, "param": {}})
+                          "query": {}, "param": {}})
         get_ifcg_interface.return_value = ["eth0"]
 
         def resp1(code=200, data=None):
             self.assertEqual(code, 200)
             self.assertEqual(data, {"currentStatus": ANY, "collection": ANY})
         self.dhcp.get(message=message, response=resp1, test=True)
-
-        # case 2: collection=false
-        message = Message({"data": {"message": "call get()"},
-                          "query": {"collection": "false"}, "param": {}})
-
-        def resp2(code=200, data=None):
-            self.assertEqual(code, 400)
-            self.assertEqual(data, {"message": "Invaild Input"})
-        self.dhcp.get(message=message, response=resp2, test=True)
 
     @patch("dhcp.Dhcp.get_ifcg_interface")
     def test_get_id(self, get_ifcg_interface):

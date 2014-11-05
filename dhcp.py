@@ -54,16 +54,12 @@ class Dhcp(Sanji):
                 logger.info("DHCP server initialize success")
                 break
             retry_cnt = retry_cnt + 1
-            time.sleep(1)
+            time.sleep(10)
         if retry_cnt == 5:
             logger.info("DHCP server initialize failed")
 
     @Route(methods="get", resource="/network/dhcp")
     def get(self, message, response):
-        if "collection" in message.query:
-            # /network/dhcp?collection=true
-            if message.query["collection"] != "true":
-                return response(code=400, data={"message": "Invaild Input"})
         # default is collection=true, return all db data
         iface_list = self.get_ifcg_interface()
         self.rsp["data"] = []
