@@ -52,10 +52,10 @@ class Dhcp(Sanji):
             restart_rc = self.dhcp_restart()
             if restart_rc is True:
                 logger.info("DHCP server initialize success")
-                break
+                return
             retry_cnt = retry_cnt + 1
             time.sleep(10)
-        if retry_cnt == 5:
+        if retry_cnt == self.retry_times:
             logger.info("DHCP server initialize failed")
 
     @Route(methods="get", resource="/network/dhcp")
