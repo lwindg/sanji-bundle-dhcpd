@@ -68,8 +68,8 @@ class Dhcpd(Sanji):
             # check interface exist in ifconfig
             if item["name"] in iface_list:
                 self.rsp["data"].append(item)
-        return response(data={"currentStatus":
-                              self.model.db["currentStatus"],
+        currentStatus = 1 if self.get_status() else 0
+        return response(data={"currentStatus": currentStatus,
                               "collection": self.rsp["data"]})
 
     @Route(methods="get", resource="/network/dhcpd/:id")
@@ -122,8 +122,7 @@ class Dhcpd(Sanji):
                (restart_rc is False or status_rc is False):
                 return response(code=400, data={"message":
                                                 "Restart DHCP failed"})
-            # update current status and save to db
-            self.model.db["currentStatus"] = 1
+            # save to db
             self.model.save_db()
             collection_index = message.data["id"] - 1
             return response(data=self.model.db["collection"][collection_index])
@@ -155,8 +154,7 @@ class Dhcpd(Sanji):
         if restart_rc is False or status_rc is False:
             return response(code=400, data={"message": "DHCP server hook\
                                             ethernet: Restart DHCP failed"})
-        # update current status and save to db
-        self.model.db["currentStatus"] = 1
+        # save to db
         self.model.save_db()
         return response(data=self.model.db)
 
@@ -271,7 +269,7 @@ class Dhcpd(Sanji):
             logger.debug("get interface ip error: %s" % e)
 
     def get_status(self):
-        cmd = ("ps aux | grep dhcpd | grep -v grep")
+        cmd = ("ps aux | grep dhcpd | grep -v grep | grep -v python")
         out = subprocess.call(cmd, shell=True)
         if out == 0:
             return True
