@@ -16,10 +16,10 @@ path_root = os.path.abspath(os.path.dirname(__file__))
 dhcpd_config_path = "/etc/dhcp/dhcpd.conf"
 
 
-class Dhcp(Sanji):
+class Dhcpd(Sanji):
 
     def init(self, *args, **kwargs):
-        self.model = ModelInitiator("dhcp", path_root)
+        self.model = ModelInitiator("dhcpd", path_root)
         self.permittedName = ["eth0"]
         self.permittedKeys = ["id", "enable", "subnet", "netmask", "startIP",
                               "endIP", "dns1", "dns2", "dns3", "name",
@@ -54,17 +54,17 @@ class Dhcp(Sanji):
                 logger.info("DHCP server initialize success")
                 return
             retry_cnt = retry_cnt + 1
-            time.sleep(10)
+            time.sleep(1)
         if retry_cnt == self.retry_times:
             logger.info("DHCP server initialize failed")
 
-    @Route(methods="get", resource="/network/dhcp")
+    @Route(methods="get", resource="/network/dhcpd")
     def get(self, message, response):
         # default is collection=true, return all db data
         iface_list = self.get_ifcg_interface()
         self.rsp["data"] = []
         for item in self.model.db["collection"]:
-            # /network/dhcp/:id
+            # /network/dhcpd/:id
             # check interface exist in ifconfig
             if item["name"] in iface_list:
                 self.rsp["data"].append(item)
@@ -72,22 +72,23 @@ class Dhcp(Sanji):
                               self.model.db["currentStatus"],
                               "collection": self.rsp["data"]})
 
-    @Route(methods="get", resource="/network/dhcp/:id")
+    @Route(methods="get", resource="/network/dhcpd/:id")
     def get_id(self, message, response):
         iface_list = self.get_ifcg_interface()
         for item in self.model.db["collection"]:
-            # /network/dhcp/:id
+            # /network/dhcpd/:id
             # check interface exist in ifconfig and db
             if (item["id"] == int(message.param["id"])) and \
                item["name"] in iface_list:
                 return response(data=item)
         return response(code=400, data={"message": "Invaild ID"})
 
-    @Route(methods="put", resource="/network/dhcp/:id")
+    @Route(methods="put", resource="/network/dhcpd/:id")
     def put_id(self, message, response):
         if not hasattr(message, "data"):
             return response(code=400, data={"message": "Invaild Input"})
         logger.debug("input message: %s" % message.data)
+        print("input message: %s" % message.data)
         # check put id and db collection id is match
         id_match = False
         for item in self.model.db["collection"]:
@@ -112,7 +113,13 @@ class Dhcp(Sanji):
             restart_rc = self.dhcp_restart()
             # check dhcpd process exist
             status_rc = self.get_status()
-            if restart_rc is False or status_rc is False:
+            # check enable data of id
+            enable_flag = False
+            if int(message.data["enable"]) == 1:
+                enable_flag = True
+
+            if (enable_flag is True) and \
+               (restart_rc is False or status_rc is False):
                 return response(code=400, data={"message":
                                                 "Restart DHCP failed"})
             # update current status and save to db
@@ -276,5 +283,5 @@ if __name__ == '__main__':
     logging.basicConfig(level=0, format=FORMAT)
     logger = logging.getLogger("ssh")
 
-    dhcp = Dhcp(connection=Mqtt())
-    dhcp.start()
+    dhcpd = Dhcpd(connection=Mqtt())
+    dhcpd.start()
