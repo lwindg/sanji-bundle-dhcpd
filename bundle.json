@@ -16,10 +16,6 @@
   "resources": [
     {
    "methods": ["get", "put"],
-   "resource": "/network/dhcpd"
-    },
-    {
-   "methods": ["get", "put"],
    "resource": "/network/dhcpd/:id"
     }
   ]

@@ -196,7 +196,7 @@ class Dhcpd(Sanji):
         return False
 
     def dhcp_stop(self):
-        stop_rc = subprocess.call("killall dhcpd", shell=True)
+        stop_rc = subprocess.call(["killall", "dhcpd"])
         if stop_rc == 0:
             logger.info("DHCP server is stopped")
         return True
