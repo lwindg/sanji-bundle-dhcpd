@@ -88,7 +88,6 @@ class Dhcpd(Sanji):
         if not hasattr(message, "data"):
             return response(code=400, data={"message": "Invaild Input"})
         logger.debug("input message: %s" % message.data)
-        print("input message: %s" % message.data)
         # check put id and db collection id is match
         id_match = False
         for item in self.model.db["collection"]:
@@ -128,7 +127,7 @@ class Dhcpd(Sanji):
             return response(data=self.model.db["collection"][collection_index])
         return response(code=400, data={"message": "Invaild input ID"})
 
-    @Route(methods="put", resource="/network/ethernet/:id")
+    @Route(methods="put", resource="/network/ethernets/:id")
     def hook(self, message, response):
         # get ethernet interface name
         if "name" not in message.data:
