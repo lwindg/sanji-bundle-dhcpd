@@ -81,7 +81,6 @@ class TestDhcpdClass(unittest.TestCase):
         # case 1: default collection=true
         message = Message({"data": {"message": "call get()"},
                           "query": {}, "param": {}})
-        get_ifcg_interface.return_value = ["eth0"]
 
         def resp1(code=200, data=None):
             self.assertEqual(code, 200)

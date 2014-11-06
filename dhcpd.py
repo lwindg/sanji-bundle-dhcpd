@@ -61,16 +61,10 @@ class Dhcpd(Sanji):
     @Route(methods="get", resource="/network/dhcpd")
     def get(self, message, response):
         # default is collection=true, return all db data
-        iface_list = self.get_ifcg_interface()
-        self.rsp["data"] = []
-        for item in self.model.db["collection"]:
-            # /network/dhcpd/:id
-            # check interface exist in ifconfig
-            if item["name"] in iface_list:
-                self.rsp["data"].append(item)
+        # check current status
         currentStatus = 1 if self.get_status() else 0
         return response(data={"currentStatus": currentStatus,
-                              "collection": self.rsp["data"]})
+                              "collection": self.model.db["collection"]})
 
     @Route(methods="get", resource="/network/dhcpd/:id")
     def get_id(self, message, response):
