@@ -209,33 +209,35 @@ class Dhcpd(Sanji):
             iface_list = self.get_ifcg_interface()
             for item in [v for v in self.model.db["collection"]]:
                 # check if id exist in ifconfig interface or not
-                if item["name"] in iface_list:
-                    # check if enable equal to 1 or not
-                    if item.get("enable", 0) == 1:
-                        dns_list = list()
-                        # parse dns1, dns2, dns3 value
-                        for index in range(1, 4):
-                            dns = item.get('dns' + str(index), None)
-                            if dns is None or len(dns) == 0:
-                                continue
-                            dns_list.append(dns)
+                if item["name"] not in iface_list:
+                    continue
+                # check if enable equal to 1 or not
+                if item.get("enable", 0) != 1:
+                    continue
+                dns_list = list()
+                # parse dns1, dns2, dns3 value
+                for index in range(1, 4):
+                    dns = item.get('dns' + str(index), None)
+                    if dns is None or len(dns) == 0:
+                        continue
+                    dns_list.append(dns)
 
-                        # get IP from ifconfig and assign to default route
-                        item["routers"] = self.get_interface_ip(item["name"])
+                # get IP from ifconfig and assign to default route
+                item["routers"] = self.get_interface_ip(item["name"])
 
-                        # if dns_list is empty, we don't put option in settings
-                        if len(dns_list) != 0:
-                            cmd = ""
-                            cmd = "option domain-name-servers " + \
-                                ", ".join(dns_list) + \
-                                ";"
-                            item["domainNameServers"] = cmd
-                        else:
-                            item["domainNameServers"] = ""
+                # if dns_list is empty, we don't put option in settings
+                if len(dns_list) != 0:
+                    cmd = ""
+                    cmd = "option domain-name-servers " + \
+                        ", ".join(dns_list) + \
+                        ";"
+                    item["domainNameServers"] = cmd
+                else:
+                    item["domainNameServers"] = ""
 
-                        # executing template
-                        subnets += self.template["subnet"].substitute(item) + \
-                            "\n\n"
+                # executing template
+                subnets += self.template["subnet"].substitute(item) + \
+                    "\n\n"
 
             # all subnets template replace in dhcpd.conf
             conf_str = self.template["dhcpd.conf"].substitute(subnets=subnets)
