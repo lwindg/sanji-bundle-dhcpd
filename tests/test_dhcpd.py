@@ -93,22 +93,25 @@ class TestDhcpdClass(unittest.TestCase):
         message = Message({"data": {"message": "call get_id()"},
                           "query": {}, "param": {"id": 1}})
         get_ifcg_interface.return_value = ["eth0"]
-        self.dhcpd.model.db = {"currentStatus": 1, "collection": [
-                              {
-                               "id": 1,
-                               "enable": 1,
-                               "name": "eth0",
-                               "subnet": "192.168.0.0",
-                               "leaseTime": "5566",
-                               "endIP": "192.168.10.50",
-                               "startIP": "192.168.10.10",
-                               "domainName": "MXcloud115",
-                               "domainNameServers":
-                               "option domain-name-servers 8.8.8.8;",
-                               "netmask": "255.255.0.0",
-                               "routers": "192.168.31.115",
-                               }]
-                               }
+        self.dhcpd.model.db = {
+            "currentStatus": 1,
+            "collection": [
+                {
+                    "id": 1,
+                    "enable": 1,
+                    "name": "eth0",
+                    "subnet": "192.168.0.0",
+                    "leaseTime": "5566",
+                    "endIP": "192.168.10.50",
+                    "startIP": "192.168.10.10",
+                    "domainName": "MXcloud115",
+                    "domainNameServers":
+                    "option domain-name-servers 8.8.8.8;",
+                    "netmask": "255.255.0.0",
+                    "routers": "192.168.31.115",
+                }
+            ]
+        }
 
         def resp1(code=200, data=None):
             self.assertEqual(code, 200)
@@ -320,23 +323,27 @@ class TestDhcpdClass(unittest.TestCase):
         # case 1: update config success
         get_ifcg_interface.return_value = ["eth0"]
         # assign db value
-        self.dhcpd.model.db = {"currentStatus": 1, "collection": [
-                              {
-                               "id": 1,
-                               "enable": 1,
-                               "name": "eth0",
-                               "subnet": "192.168.0.0",
-                               "leaseTime": "5566",
-                               "endIP": "192.168.10.50",
-                               "startIP": "192.168.10.10",
-                               "dns": ["1.1.1.1", "2.2.2.2", "3.3.3.3"],
-                               "domainName": "MXcloud115",
-                               "domainNameServers":
-                               "option domain-name-servers 8.8.8.8;",
-                               "netmask": "255.255.0.0",
-                               "routers": "192.168.31.115",
-                               }]
-                               }
+        self.dhcpd.model.db = {
+            "currentStatus": 1,
+            "collection": [
+                {
+                    "id": 1,
+                    "enable": 1,
+                    "name": "eth0",
+                    "subnet": "192.168.0.0",
+                    "leaseTime": "5566",
+                    "endIP": "192.168.10.50",
+                    "startIP": "192.168.10.10",
+                    "dns": ["1.1.1.1", "2.2.2.2", "3.3.3.3"],
+                    "domainName": "MXcloud115",
+                    "domainNameServers":
+                    "option domain-name-servers 8.8.8.8;",
+                    "netmask": "255.255.0.0",
+                    "routers": "192.168.31.115",
+                }
+            ]
+        }
+
         # patch open
         m = mock_open()
         with patch("dhcpd.open", m, create=True):
@@ -345,23 +352,25 @@ class TestDhcpdClass(unittest.TestCase):
 
         # case 2: update config failed
         get_ifcg_interface.return_value = None
-        self.dhcpd.model.db = {"collection": [
-                              {
-                               "id": 1,
-                               "enable": 1,
-                               "name": "eth0",
-                               "subnet": "192.168.0.0",
-                               "leaseTime": "5566",
-                               "endIP": "192.168.10.50",
-                               "startIP": "192.168.10.10",
-                               "dns": [],
-                               "domainName": "MXcloud115",
-                               "domainNameServers":
-                               "option domain-name-servers 8.8.8.8;",
-                               "netmask": "255.255.0.0",
-                               "routers": "192.168.31.115",
-                               }]
-                               }
+        self.dhcpd.model.db = {
+            "collection": [
+                {
+                    "id": 1,
+                    "enable": 1,
+                    "name": "eth0",
+                    "subnet": "192.168.0.0",
+                    "leaseTime": "5566",
+                    "endIP": "192.168.10.50",
+                    "startIP": "192.168.10.10",
+                    "dns": [],
+                    "domainName": "MXcloud115",
+                    "domainNameServers":
+                    "option domain-name-servers 8.8.8.8;",
+                    "netmask": "255.255.0.0",
+                    "routers": "192.168.31.115",
+                }
+            ]
+        }
         # patch open
         m = mock_open()
         with patch("dhcpd.open", m, create=True):
@@ -370,23 +379,25 @@ class TestDhcpdClass(unittest.TestCase):
 
         # case 3: length of dns is 0
         get_ifcg_interface.return_value = ["eth0"]
-        self.dhcpd.model.db = {"collection": [
-                              {
-                               "id": 1,
-                               "enable": 1,
-                               "name": "eth0",
-                               "subnet": "192.168.0.0",
-                               "leaseTime": "5566",
-                               "endIP": "192.168.10.50",
-                               "startIP": "192.168.10.10",
-                               "dns": [],
-                               "domainName": "MXcloud115",
-                               "domainNameServers":
-                               "option domain-name-servers 8.8.8.8;",
-                               "netmask": "255.255.0.0",
-                               "routers": "192.168.31.115",
-                               }]
-                               }
+        self.dhcpd.model.db = {
+            "collection": [
+                {
+                    "id": 1,
+                    "enable": 1,
+                    "name": "eth0",
+                    "subnet": "192.168.0.0",
+                    "leaseTime": "5566",
+                    "endIP": "192.168.10.50",
+                    "startIP": "192.168.10.10",
+                    "dns": [],
+                    "domainName": "MXcloud115",
+                    "domainNameServers":
+                    "option domain-name-servers 8.8.8.8;",
+                    "netmask": "255.255.0.0",
+                    "routers": "192.168.31.115",
+                }
+            ]
+        }
         m = mock_open()
         with patch("dhcpd.open", m, create=True):
             rc = self.dhcpd.update_config_file()
