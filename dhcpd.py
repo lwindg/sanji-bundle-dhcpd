@@ -22,7 +22,7 @@ class Dhcpd(Sanji):
         self.model = ModelInitiator("dhcpd", path_root)
         self.permittedName = ["eth0"]
         self.permittedKeys = ["id", "enable", "subnet", "netmask", "startIP",
-                              "endIP", "dns1", "dns2", "dns3", "name",
+                              "endIP", "dns", "name",
                               "domainName", "leaseTime"]
         # retry times when model initialize
         self.retry_times = 5
@@ -54,7 +54,7 @@ class Dhcpd(Sanji):
                 logger.info("DHCP server initialize success")
                 return
             retry_cnt = retry_cnt + 1
-            time.sleep(1)
+            time.sleep(5)
         if retry_cnt == self.retry_times:
             logger.info("DHCP server initialize failed")
 
@@ -211,25 +211,20 @@ class Dhcpd(Sanji):
                 # check if id exist in ifconfig interface or not
                 if item["name"] not in iface_list:
                     continue
+
                 # check if enable equal to 1 or not
                 if item.get("enable", 0) != 1:
                     continue
-                dns_list = list()
-                # parse dns1, dns2, dns3 value
-                for index in range(1, 4):
-                    dns = item.get('dns' + str(index), None)
-                    if dns is None or len(dns) == 0:
-                        continue
-                    dns_list.append(dns)
 
                 # get IP from ifconfig and assign to default route
+                print "in update_config_file"
                 item["routers"] = self.get_interface_ip(item["name"])
 
                 # if dns_list is empty, we don't put option in settings
-                if len(dns_list) != 0:
+                if len(item["dns"]) != 0:
                     cmd = ""
                     cmd = "option domain-name-servers " + \
-                        ", ".join(dns_list) + \
+                        ", ".join(item["dns"]) + \
                         ";"
                     item["domainNameServers"] = cmd
                 else:

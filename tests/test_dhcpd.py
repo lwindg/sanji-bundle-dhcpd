@@ -329,9 +329,7 @@ class TestDhcpdClass(unittest.TestCase):
                                "leaseTime": "5566",
                                "endIP": "192.168.10.50",
                                "startIP": "192.168.10.10",
-                               "dns1": "8.8.8.58",
-                               "dns2": "20.20.20.20",
-                               "dns3": "40.40.4.1",
+                               "dns": ["1.1.1.1", "2.2.2.2", "3.3.3.3"],
                                "domainName": "MXcloud115",
                                "domainNameServers":
                                "option domain-name-servers 8.8.8.8;",
@@ -347,7 +345,7 @@ class TestDhcpdClass(unittest.TestCase):
 
         # case 2: update config failed
         get_ifcg_interface.return_value = None
-        self.dhcpd.model.db = {"currentStatus": 1, "collection": [
+        self.dhcpd.model.db = {"collection": [
                               {
                                "id": 1,
                                "enable": 1,
@@ -356,6 +354,7 @@ class TestDhcpdClass(unittest.TestCase):
                                "leaseTime": "5566",
                                "endIP": "192.168.10.50",
                                "startIP": "192.168.10.10",
+                               "dns": [],
                                "domainName": "MXcloud115",
                                "domainNameServers":
                                "option domain-name-servers 8.8.8.8;",
@@ -371,7 +370,7 @@ class TestDhcpdClass(unittest.TestCase):
 
         # case 3: length of dns is 0
         get_ifcg_interface.return_value = ["eth0"]
-        self.dhcpd.model.db = {"currentStatus": 1, "collection": [
+        self.dhcpd.model.db = {"collection": [
                               {
                                "id": 1,
                                "enable": 1,
@@ -380,6 +379,7 @@ class TestDhcpdClass(unittest.TestCase):
                                "leaseTime": "5566",
                                "endIP": "192.168.10.50",
                                "startIP": "192.168.10.10",
+                               "dns": [],
                                "domainName": "MXcloud115",
                                "domainNameServers":
                                "option domain-name-servers 8.8.8.8;",

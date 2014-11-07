@@ -7,9 +7,7 @@
 			"netmask": "",
 			"startIP": "",
 			"endIP": "",
-			"dns1": "",
-			"dns2": "",
-			"dns3": "",
+			"dns": [],
 			"name": "eth0",
 			"domainName": "",
 			"leaseTime": "3600"
