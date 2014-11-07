@@ -59,7 +59,9 @@ class TestDhcpdClass(unittest.TestCase):
             dhcp_str = dhcp_template.substitute(r)
             self.assertEqual(mock_str, dhcp_str)
 
-    def test_model_init(self):
+    @patch("dhcpd.time.sleep")
+    def test_model_init(self, sleep):
+        sleep.return_value = True
         # dhcp_restart = True
         # mock dhcp_restart()
         with patch("dhcpd.Dhcpd.dhcp_restart") as dhcp_restart:
