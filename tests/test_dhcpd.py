@@ -270,13 +270,13 @@ class TestDhcpdClass(unittest.TestCase):
         message = Message({"data": {"id": 1, "name": "eth0"},
                           "query": {}, "param": {"id": 1}})
 
-        rc = self.dhcpd.update_db(message=message)
+        rc = self.dhcpd.update_db(message.data)
         self.assertEqual(rc, True)
 
         # test exception
         with patch.object(self.dhcpd.model, "db") as model_db:
             model_db.__getitem__.side_effect = Exception("error exception!")
-            self.dhcpd.update_db(message)
+            self.dhcpd.update_db(message.data)
 
     def test_get_ifcg_interface(self):
         with patch.object(os, "listdir") as listdir:

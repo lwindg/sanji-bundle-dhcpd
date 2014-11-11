@@ -93,7 +93,7 @@ class Dhcpd(Sanji):
         # check name
         if put_name in self.permittedName:
             # update db by put data
-            update_rc = self.update_db(message)
+            update_rc = self.update_db(message.data)
             self.model.save_db()
             if update_rc is not True:
                 return response(code=400, data={"message": "Update DB error"})
@@ -130,7 +130,7 @@ class Dhcpd(Sanji):
         name = message.data["name"]
         logger.info("DHCP server is restarting.\
                      Due to %s setting had been chanaged" % name)
-        update_rc = self.update_db(dict(id=id, enable=0))
+        update_rc = self.update_db(dict(name=name, enable=0))
         self.model.save_db()
         if update_rc is not True:
             return response(code=400, data={"message": "DHCP server hook\
@@ -152,7 +152,7 @@ class Dhcpd(Sanji):
         return response(data=self.model.db)
 
     def update_db(self, message):
-        data = dict((key, value) for key, value in message.data.items()
+        data = dict((key, value) for key, value in message.items()
                     if key in self.permittedKeys)
         logger.debug("update_db data: %s" % data)
         # find id correspond collection data
@@ -217,7 +217,6 @@ class Dhcpd(Sanji):
                     continue
 
                 # get IP from ifconfig and assign to default route
-                print "in update_config_file"
                 item["routers"] = self.get_interface_ip(item["name"])
 
                 # if dns_list is empty, we don't put option in settings
