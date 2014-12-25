@@ -98,9 +98,7 @@ class Dhcpd(Sanji):
         # get current exist interface, and return corresponding data
         iface_list = self.get_ifcg_interface()
         rc_data = []
-        print iface_list
         for item in self.model.db["collection"]:
-            print item
             if item["name"] in iface_list:
                 rc_data.append(item)
 
