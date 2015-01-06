@@ -94,7 +94,9 @@ class Dhcpd(Sanji):
 
     @Route(methods="get", resource="/network/dhcpd")
     def get(self, message, response):
+        return self.do_get(message, response)
 
+    def do_get(self, message, response):
         # get current exist interface, and return corresponding data
         iface_list = self.get_ifcg_interface()
         rc_data = []
@@ -185,7 +187,7 @@ class Dhcpd(Sanji):
     @Route(methods="put", resource="/network/ethernets/:id")
     def hook(self, message, response):
 
-        # get ethernet interface name
+        # check ethernet interface name
         if "name" not in message.data:
             logger.debug("Invalid Input")
             return response(code=400, data={"message": "Invalid Input"})
@@ -233,8 +235,6 @@ class Dhcpd(Sanji):
         data = dict((key, value) for key, value in message.items()
                     if key in self.permittedKeys)
 
-        logger.debug("update_db data: %s" % data)
-
         '''
         find resource id match db data,
         and then update the db data
@@ -249,13 +249,18 @@ class Dhcpd(Sanji):
                 # update db data by dictionary add
                 db_data[index] = dict(db_data[index].items() +
                                       data.items())
+        logger.debug("update db success")
 
     def get_ifcg_interface(self):
 
         # get exist interface
-        interfaces = os.listdir("/sys/class/net")
-        rc_interface = [x for x in interfaces if x != "lo"]
-        return rc_interface
+        try:
+            interfaces = os.listdir("/sys/class/net")
+            rc_interface = [x for x in interfaces if x != "lo"]
+            return rc_interface
+        except Exception:
+            logger.warning("get exist interface failed")
+            return []
 
     def dhcp_restart(self):
         self.dhcp_stop()
