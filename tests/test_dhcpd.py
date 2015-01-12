@@ -61,20 +61,23 @@ class TestDhcpdClass(unittest.TestCase):
             self.assertEqual(mock_str, dhcp_str)
 
     @patch("dhcpd.time.sleep")
-    def test_init_model(self, sleep):
+    @patch("dhcpd.Dhcpd.update_config_file")
+    def test_init_model(self, update_config_file, sleep):
 
+        # arrange
+        update_config_file.return_value = True
         sleep.return_value = True
         with patch("dhcpd.Dhcpd.dhcp_restart") as dhcp_restart:
             dhcp_restart.return_value = True
             with patch("dhcpd.logger.info") as log:
                 self.dhcpd.init_model()
-                log.assert_called_once_with("DHCP server initialize success")
+                log.assert_called_with("DHCP server initialize success")
 
         with patch("dhcpd.Dhcpd.dhcp_restart") as dhcp_restart:
             dhcp_restart.return_value = False
             with patch("dhcpd.logger.info") as log:
                 self.dhcpd.init_model()
-                log.assert_called_once_with("DHCP server initialize failed")
+                log.assert_called_with("DHCP server initialize failed")
 
     @patch("dhcpd.Dhcpd.get_ifcg_interface")
     def test_do_get(self, get_ifcg_interface):
