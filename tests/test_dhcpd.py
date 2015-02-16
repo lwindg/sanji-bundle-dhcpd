@@ -276,7 +276,7 @@ class TestDhcpdClass(unittest.TestCase):
         test hook with update_config failed should return code 400
         """
 
-        message = Message({"data": {"name": "eth0"},
+        message = Message({"data": {"name": "eth0", "id": 1},
                            "query": {}, "param": {}})
 
         update_config_file.side_effect = Exception("update_config failed")
@@ -296,7 +296,7 @@ class TestDhcpdClass(unittest.TestCase):
         """
         test hook with dhcp_restart failed should return code 400
         """
-        message = Message({"data": {"name": "eth0"},
+        message = Message({"data": {"name": "eth0", "id": 1},
                            "query": {}, "param": {}})
 
         self.dhcpd.model.db = {
@@ -337,7 +337,7 @@ class TestDhcpdClass(unittest.TestCase):
         test hook should return code 200
         """
 
-        message = Message({"data": {"name": "eth0"},
+        message = Message({"data": {"name": "eth0", "id": 1},
                            "query": {}, "param": {}})
 
         update_db.return_value = True

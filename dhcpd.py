@@ -197,7 +197,9 @@ class Dhcpd(Sanji):
                      Due to %s setting had been chanaged" % hook_name)
 
         try:
-            self.update_db(dict(name=hook_name, enable=0))
+            update_msg = {"name": hook_name, "enable": 0,
+                          "id": message.data["id"]}
+            self.update_db(update_msg)
             self.model.save_db()
         except Exception as e:
             logger.debug("Hook ethernet update db error: %s" % e)
@@ -234,7 +236,6 @@ class Dhcpd(Sanji):
         # extract data from message by permittedKeys
         data = dict((key, value) for key, value in message.items()
                     if key in self.permittedKeys)
-
         '''
         find resource id match db data,
         and then update the db data
