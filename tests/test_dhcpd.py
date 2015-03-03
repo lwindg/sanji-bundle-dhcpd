@@ -15,8 +15,8 @@ from string import Template
 from mock import Mock
 from mock import mock_open
 from mock import ANY
-
 logger = logging.getLogger()
+
 
 try:
     sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../')
@@ -62,22 +62,35 @@ class TestDhcpdClass(unittest.TestCase):
 
     @patch("dhcpd.time.sleep")
     @patch("dhcpd.Dhcpd.update_config_file")
-    def test_init_model(self, update_config_file, sleep):
+    def test_init_model_with_initialize_success(self, update_config_file, sleep):
 
         # arrange
         update_config_file.return_value = True
         sleep.return_value = True
+        
+        # act and assert
         with patch("dhcpd.Dhcpd.dhcp_restart") as dhcp_restart:
             dhcp_restart.return_value = True
             with patch("dhcpd.logger.info") as log:
                 self.dhcpd.init_model()
                 log.assert_called_with("DHCP server initialize success")
 
-        with patch("dhcpd.Dhcpd.dhcp_restart") as dhcp_restart:
-            dhcp_restart.return_value = False
-            with patch("dhcpd.logger.info") as log:
-                self.dhcpd.init_model()
-                log.assert_called_with("DHCP server initialize failed")
+    @patch("dhcpd.time.sleep")
+    @patch("dhcpd.Dhcpd.update_config_file")
+    def test_init_model_with_initialize_failed(self, update_config_file, sleep):
+    	
+    	# arrange
+    	update_config_file.return_value = True
+    	sleep.return_value = True
+    	self.dhcpd.model.db = {
+    		"currentStatus": 0,
+    		"collection": []
+    	}
+        
+        # act and assert
+        with patch("dhcpd.logger.info") as log:
+            self.dhcpd.init_model()
+            log.assert_called_with("DHCP server initialize success")
 
     @patch("dhcpd.Dhcpd.get_ifcg_interface")
     def test_do_get(self, get_ifcg_interface):

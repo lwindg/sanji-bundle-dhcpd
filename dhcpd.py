@@ -83,14 +83,15 @@ class Dhcpd(Sanji):
             restart_rc = self.dhcp_restart()
 
             if restart_rc is True:
-                logger.info("DHCP server initialize success")
-                return
+                break
 
             retry_cnt = retry_cnt + 1
             time.sleep(10)
 
         if retry_cnt == self.retry_times:
             logger.info("DHCP server initialize failed")
+        else:
+        	logger.info("DHCP server initialize success")
 
     @Route(methods="get", resource="/network/dhcpd")
     def get(self, message, response):
