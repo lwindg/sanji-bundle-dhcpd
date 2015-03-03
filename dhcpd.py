@@ -71,11 +71,22 @@ class Dhcpd(Sanji):
 
     def init_model(self):
         retry_cnt = 0
+        retry_flag = 0
 
         try:
             self.update_config_file()
         except Exception as e:
             logger.debug("Update config error: %s" % e)
+
+        # check interfaces in collection
+        for item in self.model.db["collection"]:
+            if item["enable"] == 1:
+                retry_flag = 1
+                break
+
+        if retry_flag == 0:
+            logger.info("DHCP server initialize success")
+            return
 
         # retry
         while retry_cnt < self.retry_times:
@@ -83,14 +94,15 @@ class Dhcpd(Sanji):
             restart_rc = self.dhcp_restart()
 
             if restart_rc is True:
-                logger.info("DHCP server initialize success")
-                return
+                break
 
             retry_cnt = retry_cnt + 1
             time.sleep(10)
 
         if retry_cnt == self.retry_times:
             logger.info("DHCP server initialize failed")
+        else:
+            logger.info("DHCP server initialize success")
 
     @Route(methods="get", resource="/network/dhcpd")
     def get(self, message, response):
