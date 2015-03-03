@@ -80,14 +80,14 @@ class Dhcpd(Sanji):
 
         # check interfaces in collection
         for item in self.model.db["collection"]:
-        	if item["enable"] == 1:
-        		retry_flag = 1
-        		break
+            if item["enable"] == 1:
+                retry_flag = 1
+                break
 
         if retry_flag == 0:
-        	logger.info("DHCP server initialize success")
-        	return
-    
+            logger.info("DHCP server initialize success")
+            return
+
         # retry
         while retry_cnt < self.retry_times:
 
@@ -102,7 +102,7 @@ class Dhcpd(Sanji):
         if retry_cnt == self.retry_times:
             logger.info("DHCP server initialize failed")
         else:
-        	logger.info("DHCP server initialize success")
+            logger.info("DHCP server initialize success")
 
     @Route(methods="get", resource="/network/dhcpd")
     def get(self, message, response):
