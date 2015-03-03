@@ -71,12 +71,23 @@ class Dhcpd(Sanji):
 
     def init_model(self):
         retry_cnt = 0
+        retry_flag = 0
 
         try:
             self.update_config_file()
         except Exception as e:
             logger.debug("Update config error: %s" % e)
 
+        # check interfaces in collection
+        for item in self.model.db["collection"]:
+        	if item["enable"] == 1:
+        		retry_flag = 1
+        		break
+
+        if retry_flag == 0:
+        	logger.info("DHCP server initialize success")
+        	return
+    
         # retry
         while retry_cnt < self.retry_times:
 
