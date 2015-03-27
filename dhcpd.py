@@ -196,6 +196,13 @@ class Dhcpd(Sanji):
         collection_index = message.data["id"] - 1
         return response(data=self.model.db["collection"][collection_index])
 
+    # TODO: HOOK ehternet should including two resources:
+    #       1. /network/ethernets
+    #       2. /network/ethernets/:id
+    @Route(methods="put", resource="/network/ethernets")
+    def hook_eth_all(self, message, response):
+        return response(data=message.data)
+
     @Route(methods="put", resource="/network/ethernets/:id")
     def hook(self, message, response):
 
