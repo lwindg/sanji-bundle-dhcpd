@@ -8,19 +8,26 @@
   "main": "dhcpd.py",
   "argument": "",
   "priority": 45,
-  "hook": ["ethernet"],
+  "hook": [
+    "ethernet"
+  ],
   "dependencies": {},
   "repository": "",
   "role": "model",
   "ttl": 10,
   "resources": [
     {
-   "methods": ["get"],
-   "resource": "/network/dhcpd"
+      "methods": [
+        "get"
+      ],
+      "resource": "/network/dhcpd"
     },
     {
-   "methods": ["get", "put"],
-   "resource": "/network/dhcpd/:id"
+      "methods": [
+        "get",
+        "put"
+      ],
+      "resource": "/network/dhcpd/:id"
     }
   ]
 }
