@@ -147,7 +147,7 @@ class Dhcpd(Sanji):
             jsonschema.validate(message.data, PUT_SCHEMA)
         except jsonschema.ValidationError:
             logger.warning("Invalid Input")
-            response(code=400, data={"message": "Invalid Input"})
+            return response(code=400, data={"message": "Invalid Input"})
 
         # check put id and db collection id is match
         id_match = False
