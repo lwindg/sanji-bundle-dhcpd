@@ -3,7 +3,7 @@ subnet ${subnet} netmask ${netmask} {
 	range ${startIP} ${endIP};
 	default-lease-time ${leaseTime};
 	max-lease-time ${leaseTime};
-	${domainNameServers}
+	option domain-name-servers ${domainNameServers};
 	option domain-name "${domainName}";
 	option routers ${routers};
 }
