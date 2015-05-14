@@ -7,7 +7,7 @@
 			"netmask": "",
 			"startIP": "",
 			"endIP": "",
-			"dns": [],
+			"domainNameServers": [],
 			"name": "eth0",
 			"domainName": "",
 			"leaseTime": "3600"
@@ -19,7 +19,7 @@
 			"netmask": "",
 			"startIP": "",
 			"endIP": "",
-			"dns": [],
+			"domainNameServers": [],
 			"name": "eth1",
 			"domainName": "",
 			"leaseTime": "3600"
@@ -31,7 +31,7 @@
 			"netmask": "",
 			"startIP": "",
 			"endIP": "",
-			"dns": [],
+			"domainNameServers": [],
 			"name": "eth2",
 			"domainName": "",
 			"leaseTime": "3600"
@@ -43,7 +43,7 @@
 			"netmask": "",
 			"startIP": "",
 			"endIP": "",
-			"dns": [],
+			"domainNameServers": [],
 			"name": "eth3",
 			"domainName": "",
 			"leaseTime": "3600"

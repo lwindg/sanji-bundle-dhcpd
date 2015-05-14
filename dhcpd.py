@@ -6,6 +6,7 @@ import os
 import subprocess
 import time
 import jsonschema
+import copy
 
 from sanji.core import Sanji
 from sanji.core import Route
@@ -26,13 +27,13 @@ PUT_SCHEMA = {
         "netmask": {"type": "string"},
         "startIP": {"type": "string"},
         "endIP": {"type": "string"},
-        "dns": {"type": "array"},
+        "domainNameServers": {"type": "array"},
         "domainName": {"type": "string"},
         "leaseTime": {"type": "string"}
     },
     "required": ["enable", "id", "name", "subnet", "netmask",
                  "startIP", "endIP", "leaseTime"],
-    "additionalProperties": False
+    "additionalProperties": True
 }
 
 
@@ -44,7 +45,7 @@ class Dhcpd(Sanji):
         self.model = ModelInitiator("dhcpd", path_root)
         self.permittedName = ["eth0", "eth1", "eth2", "eth3"]
         self.permittedKeys = ["id", "enable", "subnet", "netmask", "startIP",
-                              "endIP", "dns", "name",
+                              "endIP", "domainNameServers", "name",
                               "domainName", "leaseTime"]
 
         # retry times when model initialize
@@ -320,19 +321,16 @@ class Dhcpd(Sanji):
             # get IP from ifconfig and assign to default route
             item["routers"] = self.get_interface_ip(item["name"])
 
+            dns_list = ""
             # if dns_list is empty, we don't put option in settings
-            if len(item["dns"]) != 0:
-                cmd = ""
-                cmd = "option domain-name-servers " + \
-                    ", ".join(item["dns"]) + \
-                    ";"
-                item["domainNameServers"] = cmd
-            else:
-                item["domainNameServers"] = ""
+            if len(item["domainNameServers"]) != 0:
+                dns_list = ", ".join(item["domainNameServers"])
+
+            conf = copy.deepcopy(item)
+            conf["domainNameServers"] = dns_list
 
             # executing template
-            subnets += self.template["subnet"].substitute(item) + \
-                "\n\n"
+            subnets += self.template["subnet"].substitute(conf) + "\n\n"
 
         # all subnets template replace in dhcpd.conf
         conf_str = self.template["dhcpd.conf"].substitute(subnets=subnets)

@@ -10,6 +10,7 @@ import subprocess
 
 from sanji.connection.mockup import Mockup
 from sanji.message import Message
+
 from mock import patch
 from string import Template
 from mock import Mock
@@ -22,6 +23,9 @@ try:
     sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../')
     from dhcpd import Dhcpd
 except ImportError as e:
+    print os.path.dirname(os.path.realpath(__file__)) + '/../'
+    print sys.path
+    print e
     print "Please check the python PATH for import test module. (%s)" \
         % __file__
     exit(1)
@@ -181,7 +185,8 @@ class TestDhcpdClass(unittest.TestCase):
 
         message = Message({"data": {"id": 1, "name": "eth0", "enable": 1,
                                     "subnet": "", "netmask": "",
-                                    "startIP": "", "endIP": "", "dns": [],
+                                    "startIP": "", "endIP": "",
+                                    "domainNameServers": [],
                                     "domainName": "", "leaseTime": "3600"},
                           "query": {}, "param": {"id": 1}})
         update_db.side_effect = Exception("update_db failed")
@@ -200,7 +205,8 @@ class TestDhcpdClass(unittest.TestCase):
 
         message = Message({"data": {"id": 1, "name": "eth0", "enable": 1,
                                     "subnet": "", "netmask": "",
-                                    "startIP": "", "endIP": "", "dns": [],
+                                    "startIP": "", "endIP": "",
+                                    "domainNameServers": [],
                                     "domainName": "", "leaseTime": "3600"},
                           "query": {}, "param": {"id": 1}})
 
@@ -223,7 +229,8 @@ class TestDhcpdClass(unittest.TestCase):
 
         message = Message({"data": {"id": 1, "name": "eth0", "enable": 1,
                                     "subnet": "", "netmask": "",
-                                    "startIP": "", "endIP": "", "dns": [],
+                                    "startIP": "", "endIP": "",
+                                    "domainNameServers": [],
                                     "domainName": "", "leaseTime": "3600"},
                           "query": {}, "param": {"id": 1}})
 
@@ -247,7 +254,8 @@ class TestDhcpdClass(unittest.TestCase):
 
         message = Message({"data": {"id": 1, "name": "eth0", "enable": 1,
                                     "subnet": "", "netmask": "",
-                                    "startIP": "", "endIP": "", "dns": [],
+                                    "startIP": "", "endIP": "",
+                                    "domainNameServers": [],
                                     "domainName": "", "leaseTime": "3600"},
                           "query": {}, "param": {"id": 1}})
 
@@ -331,10 +339,8 @@ class TestDhcpdClass(unittest.TestCase):
                     "leaseTime": "5566",
                     "endIP": "192.168.10.50",
                     "startIP": "192.168.10.10",
-                    "dns": ["1.1.1.1", "2.2.2.2", "3.3.3.3"],
+                    "domainNameServers": ["1.1.1.1", "2.2.2.2", "3.3.3.3"],
                     "domainName": "MXcloud115",
-                    "domainNameServers":
-                    "option domain-name-servers 8.8.8.8;",
                     "netmask": "255.255.0.0",
                     "routers": "192.168.31.115",
                 }
@@ -444,10 +450,8 @@ class TestDhcpdClass(unittest.TestCase):
                     "leaseTime": "5566",
                     "endIP": "192.168.10.50",
                     "startIP": "192.168.10.10",
-                    "dns": ["1.1.1.1", "2.2.2.2", "3.3.3.3"],
+                    "domainNameServers": ["1.1.1.1", "2.2.2.2", "3.3.3.3"],
                     "domainName": "MXcloud115",
-                    "domainNameServers":
-                    "option domain-name-servers 8.8.8.8;",
                     "netmask": "255.255.0.0",
                     "routers": "192.168.31.115",
                 }
