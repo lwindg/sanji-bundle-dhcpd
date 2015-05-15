@@ -197,25 +197,23 @@ class Dhcpd(Sanji):
         collection_index = message.data["id"] - 1
         return response(data=self.model.db["collection"][collection_index])
 
-    # TODO: HOOK ehternet should including two resources:
-    #       1. /network/ethernets
-    #       2. /network/ethernets/:id
-    @Route(methods="put", resource="/network/ethernets")
-    def hook_eth_all(self, message, response):
-        return response(data=message.data)
-
-    @Route(methods="put", resource="/network/ethernets/:id")
-    def hook(self, message, response):
+    @Route(methods="put", resource="/network/interfaces")
+    def _event_interface_info(self, message):
+        time.sleep(2)
 
         # check ethernet interface name
         if "name" not in message.data:
             logger.debug("Invalid Input")
+            return
+            """
             return response(code=400, data={"message": "Invalid Input"})
+            """
 
         hook_name = message.data["name"]
         logger.info("DHCP server is restarting.\
                      Due to %s setting had been chanaged" % hook_name)
 
+        ''' do not set to disable
         try:
             update_msg = {"name": hook_name, "enable": 0,
                           "id": message.data["id"]}
@@ -223,15 +221,22 @@ class Dhcpd(Sanji):
             self.model.save_db()
         except Exception as e:
             logger.debug("Hook ethernet update db error: %s" % e)
+            return
+            """
             return response(code=400, data={"message": "DHCP server hook\
                                              ethernet: Update db error"})
+            """
+        '''
 
         try:
             self.update_config_file()
         except Exception as e:
             logger.debug("Hook ethernet update config error: %s" % e)
+            return
+            """
             return response(code=400, data={"message": "DHCP server hook\
                                              ethernet: Update config error"})
+            """
 
         restart_rc = self.dhcp_restart()
 
@@ -246,10 +251,14 @@ class Dhcpd(Sanji):
 
         if (enable_flag is True) and \
            (restart_rc is False or status_rc is False):
+            logger.debug("DHCP server hook ethernet: Restart DHCP failed")
+            return
+            """
             return response(code=400, data={"message": "DHCP server hook\
                                             ethernet: Restart DHCP failed"})
+            """
 
-        return response(data=self.model.db)
+        # return response(data=self.model.db)
 
     def update_db(self, message):
 
@@ -309,7 +318,6 @@ class Dhcpd(Sanji):
         iface_list = self.get_ifcg_interface()
 
         for item in [v for v in self.model.db["collection"]]:
-
             # check if id exist in ifconfig interface or not
             if item["name"] not in iface_list:
                 continue

@@ -8,14 +8,16 @@
   "main": "dhcpd.py",
   "argument": "",
   "priority": 45,
-  "hook": [
-    "ethernet"
-  ],
+  "hook": [],
   "dependencies": {},
   "repository": "",
   "role": "model",
   "ttl": 10,
   "resources": [
+    {
+      "role": "view",
+      "resource": "/network/interfaces"
+    },
     {
       "methods": [
         "get"
