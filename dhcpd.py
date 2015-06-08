@@ -304,7 +304,7 @@ class Dhcpd(Sanji):
             logger.info("DHCP server is stopped")
 
     def dhcp_start(self):
-        start_rc = subprocess.call("services isc-dhcp-server restart")
+        start_rc = subprocess.call(["service", "isc-dhcp-server", "restart"])
         if start_rc == 0:
             logger.info("DHCP Server start success")
             return True
