@@ -463,7 +463,6 @@ class TestDhcpdClass(unittest.TestCase):
         m = mock_open()
         with patch("dhcpd.open", m, create=True):
             self.dhcpd.update_config_file()
-            logger.info.assert_called_once_with("DHCPD config is updated")
 
     @patch("dhcpd.subprocess")
     def test_get_interface_ip(self, subprocess):
