@@ -350,7 +350,6 @@ class Dhcpd(Sanji):
         conf_str = self.template["dhcpd.conf"].substitute(subnets=subnets)
 
         if len(names) != 0:
-            logger.info("names is [%s]\n" % names)
             with open(Dhcpd.DEFAULT_CONFIG_PATH, "w") as f:
                 f.write("INTERFACES=%s" % names)
 
