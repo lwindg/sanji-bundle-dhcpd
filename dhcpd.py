@@ -40,6 +40,7 @@ PUT_SCHEMA = {
 class Dhcpd(Sanji):
 
     CONFIG_PATH = "/etc/dhcp/dhcpd.conf"
+    DEFAULT_CONFIG_PATH = "/etc/default/isc-dhcp-server"
 
     def init(self, *args, **kwargs):
         self.model = ModelInitiator("dhcpd", path_root)
@@ -303,9 +304,7 @@ class Dhcpd(Sanji):
             logger.info("DHCP server is stopped")
 
     def dhcp_start(self):
-        interfaces = self.get_ifcg_interface()
-        start_rc = subprocess.call("dhcpd %s" % " ".join(interfaces),
-                                   shell=True)
+        start_rc = subprocess.call("services isc-dhcp-server restart")
         if start_rc == 0:
             logger.info("DHCP Server start success")
             return True
@@ -314,6 +313,7 @@ class Dhcpd(Sanji):
             return False
 
     def update_config_file(self):
+        names = ""
         subnets = ""
         iface_list = self.get_ifcg_interface()
 
@@ -340,8 +340,19 @@ class Dhcpd(Sanji):
             # executing template
             subnets += self.template["subnet"].substitute(conf) + "\n\n"
 
+            if len(item["domainName"]) != 0:
+                conf["domainName"] = item["domainName"]
+
+            # all listen interface
+            names += item["name"] + " "
+
         # all subnets template replace in dhcpd.conf
         conf_str = self.template["dhcpd.conf"].substitute(subnets=subnets)
+
+        if len(names) != 0:
+            logger.info("names is [%s]\n" % names)
+            with open(Dhcpd.DEFAULT_CONFIG_PATH, "w") as f:
+                f.write("INTERFACES=%s" % names)
 
         with open(Dhcpd.CONFIG_PATH, "w") as f:
             f.write(conf_str)
