@@ -1,0 +1,5 @@
+sanji-bundle-dhcpd (0.9.1-1) unstable; urgency=low
+
+  * Updated build scripts.
+
+ -- TC Huang <tc.huang@moxa.com>  Thu, 11 Jun 2015 22:48:27 +0800
