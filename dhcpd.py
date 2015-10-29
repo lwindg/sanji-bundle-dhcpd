@@ -14,7 +14,7 @@ from sanji.model_initiator import ModelInitiator
 from sanji.connection.mqtt import Mqtt
 from string import Template
 
-logger = logging.getLogger()
+_logger = logging.getLogger("sanji.dhcpd")
 path_root = os.path.abspath(os.path.dirname(__file__))
 
 PUT_SCHEMA = {
@@ -78,7 +78,7 @@ class Dhcpd(Sanji):
         try:
             self.update_config_file()
         except Exception as e:
-            logger.debug("Update config error: %s" % e)
+            _logger.debug("Update config error: %s" % e)
 
         # check interfaces in collection
         for item in self.model.db["collection"]:
@@ -87,7 +87,7 @@ class Dhcpd(Sanji):
                 break
 
         if retry_flag == 0:
-            logger.info("DHCP server initialize success")
+            _logger.info("DHCP server initialize success")
             return
 
         # retry
@@ -102,9 +102,9 @@ class Dhcpd(Sanji):
             time.sleep(10)
 
         if retry_cnt == self.retry_times:
-            logger.info("DHCP server initialize failed")
+            _logger.info("DHCP server initialize failed")
         else:
-            logger.info("DHCP server initialize success")
+            _logger.info("DHCP server initialize success")
 
     @Route(methods="get", resource="/network/dhcpd")
     def get(self, message, response):
@@ -136,7 +136,7 @@ class Dhcpd(Sanji):
             if (item["id"] == int(message.param["id"])) and \
                item["name"] in iface_list:
                 return response(data=item)
-        logger.warning("Invalid Input")
+        _logger.warning("Invalid Input")
         return response(code=400, data={"message": "Invalid Input"})
 
     @Route(methods="put", resource="/network/dhcpd/:id")
@@ -148,7 +148,7 @@ class Dhcpd(Sanji):
         try:
             jsonschema.validate(message.data, PUT_SCHEMA)
         except jsonschema.ValidationError:
-            logger.warning("Invalid Input")
+            _logger.warning("Invalid Input")
             return response(code=400, data={"message": "Invalid Input"})
 
         # check put id and db collection id is match
@@ -164,20 +164,20 @@ class Dhcpd(Sanji):
 
         # check name is permitted or not
         if not(put_name in self.permittedName):
-            logger.debug("Invalid Name")
+            _logger.debug("Invalid Name")
             return response(code=400, data={"message": "Invalid Name"})
 
         try:
             self.update_db(message.data)
             self.model.save_db()
         except Exception as e:
-            logger.debug("Update DB error: %s" % e)
+            _logger.debug("Update DB error: %s" % e)
             return response(code=400, data={"message": "Update DB error"})
 
         try:
             self.update_config_file()
         except Exception as e:
-            logger.debug("Update config error: %s" % e)
+            _logger.debug("Update config error: %s" % e)
             return response(code=400, data={"message": "Update config error"})
 
         restart_rc = self.dhcp_restart()
@@ -192,7 +192,7 @@ class Dhcpd(Sanji):
 
         if (enable_flag is True) and \
            (restart_rc is False or status_rc is False):
-            logger.debug("Restart DHCP failed")
+            _logger.debug("Restart DHCP failed")
             return response(code=400, data={"message": "Restart DHCP failed"})
 
         collection_index = message.data["id"] - 1
@@ -204,14 +204,14 @@ class Dhcpd(Sanji):
 
         # check ethernet interface name
         if "name" not in message.data:
-            logger.debug("Invalid Input")
+            _logger.debug("Invalid Input")
             return
             """
             return response(code=400, data={"message": "Invalid Input"})
             """
 
         hook_name = message.data["name"]
-        logger.info("DHCP server is restarting.\
+        _logger.info("DHCP server is restarting.\
                      Due to %s setting had been chanaged" % hook_name)
 
         ''' do not set to disable
@@ -221,7 +221,7 @@ class Dhcpd(Sanji):
             self.update_db(update_msg)
             self.model.save_db()
         except Exception as e:
-            logger.debug("Hook ethernet update db error: %s" % e)
+            _logger.debug("Hook ethernet update db error: %s" % e)
             return
             """
             return response(code=400, data={"message": "DHCP server hook\
@@ -232,7 +232,7 @@ class Dhcpd(Sanji):
         try:
             self.update_config_file()
         except Exception as e:
-            logger.debug("Hook ethernet update config error: %s" % e)
+            _logger.debug("Hook ethernet update config error: %s" % e)
             return
             """
             return response(code=400, data={"message": "DHCP server hook\
@@ -252,7 +252,7 @@ class Dhcpd(Sanji):
 
         if (enable_flag is True) and \
            (restart_rc is False or status_rc is False):
-            logger.debug("DHCP server hook ethernet: Restart DHCP failed")
+            _logger.debug("DHCP server hook ethernet: Restart DHCP failed")
             return
             """
             return response(code=400, data={"message": "DHCP server hook\
@@ -280,7 +280,7 @@ class Dhcpd(Sanji):
                 # update db data by dictionary add
                 db_data[index] = dict(db_data[index].items() +
                                       data.items())
-        logger.debug("update db success")
+        _logger.debug("update db success")
 
     def get_ifcg_interface(self):
 
@@ -290,7 +290,7 @@ class Dhcpd(Sanji):
             rc_interface = [x for x in interfaces if x != "lo"]
             return rc_interface
         except Exception:
-            logger.warning("get exist interface failed")
+            _logger.warning("get exist interface failed")
             return []
 
     def dhcp_restart(self):
@@ -301,15 +301,15 @@ class Dhcpd(Sanji):
         stop_rc = subprocess.call(["killall", "dhcpd"])
 
         if stop_rc == 0:
-            logger.info("DHCP server is stopped")
+            _logger.info("DHCP server is stopped")
 
     def dhcp_start(self):
         start_rc = subprocess.call(["service", "isc-dhcp-server", "restart"])
         if start_rc == 0:
-            logger.info("DHCP Server start success")
+            _logger.info("DHCP Server start success")
             return True
         else:
-            logger.info("DHCP Server start failed")
+            _logger.info("DHCP Server start failed")
             return False
 
     def update_config_file(self):
@@ -356,7 +356,7 @@ class Dhcpd(Sanji):
         with open(Dhcpd.CONFIG_PATH, "w") as f:
             f.write(conf_str)
 
-        logger.info("DHCPD config is updated")
+        _logger.info("DHCPD config is updated")
 
     def get_interface_ip(self, iface):
         cmd = ("ip addr show %s | grep inet | grep -v inet6 | awk '{print $2}'"
@@ -379,7 +379,7 @@ class Dhcpd(Sanji):
 if __name__ == '__main__':
     FORMAT = '%(asctime)s - %(levelname)s - %(lineno)s - %(message)s'
     logging.basicConfig(level=0, format=FORMAT)
-    logger = logging.getLogger("ssh")
+    _logger = logging.getLogger("ssh")
 
     dhcpd = Dhcpd(connection=Mqtt())
     dhcpd.start()

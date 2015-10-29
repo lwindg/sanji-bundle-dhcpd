@@ -3,3 +3,4 @@ paho-mqtt
 coveralls
 sanji
 jsonschema
+functools32
