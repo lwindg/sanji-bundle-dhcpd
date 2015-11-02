@@ -21,9 +21,8 @@ FILES= \
 	Makefile \
 	README.md \
 	requirements.txt \
-	data/dhcpd.json.factory \
-	template/dhcpd.conf \
-	template/subnet
+	dhcpd/__init__.py \
+	data/dhcpd.json.factory
 
 INSTALL_FILES=$(addprefix $(INSTALL_DIR)/,$(FILES))
 

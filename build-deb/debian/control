@@ -6,13 +6,13 @@ Build-Depends-Indep: python (>= 2.7)
 Standards-Version: 3.9.3
 Section: libs
 Homepage: http://www.moxa.com
-#Vcs-Git: 
-#Vcs-Browser: 
+#Vcs-Git:
+#Vcs-Browser:
 X-Python-Version: >= 2.5
 
 Package: sanji-bundle-dhcpd
 Section: libs
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, python2.7, python-pip, python-dev
+Depends: ${shlibs:Depends}, ${misc:Depends}, python2.7, python-pip, python-dev isc-dhcp-server
 Description: Provide system status
 
