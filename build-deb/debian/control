@@ -13,6 +13,6 @@ X-Python-Version: >= 2.5
 Package: sanji-bundle-dhcpd
 Section: libs
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, python2.7, python-pip, python-dev isc-dhcp-server
+Depends: ${shlibs:Depends}, ${misc:Depends}, python2.7, python-pip, python-dev, isc-dhcp-server
 Description: Provide system status
 
