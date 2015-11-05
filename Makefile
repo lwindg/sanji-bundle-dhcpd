@@ -16,7 +16,7 @@ PROJECT_STAGING_DIR=$(STAGING_DIR)/$(PROJECT_VERSION)
 
 FILES= \
 	bundle.json \
-	dhcpd.py \
+	index.py \
 	LICENSE \
 	Makefile \
 	README.md \
