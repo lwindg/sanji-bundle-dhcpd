@@ -1,10 +1,10 @@
-sanji-bundle-dhcpd (0.9.3-3) trusty; urgency=low
+sanji-bundle-dhcpd (0.9.3) trusty; urgency=low
 
   * Fix Makefile
 
  -- Zack YL Shih <zackyl.shih@moxa.com>  Thu, 05 Nov 2015 18:43:33 +0800
 
-sanji-bundle-dhcpd (0.9.2-3) trusty; urgency=low
+sanji-bundle-dhcpd (0.9.2) trusty; urgency=low
 
   * Re-implement
 
