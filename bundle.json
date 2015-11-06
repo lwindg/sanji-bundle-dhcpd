@@ -5,7 +5,7 @@
   "email": "zackyl.shih@moxa.com",
   "description": "DHCP Server configuration.",
   "license": "MOXA",
-  "main": "dhcpd.py",
+  "main": "index.py",
   "argument": "",
   "priority": 99,
   "hook": [],
