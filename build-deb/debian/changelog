@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (0.9.4) trusty; urgency=low
+
+  * Fix bundle.json
+
+ -- Zack YL Shih <zackyl.shih@moxa.com>  Fri, 06 Nov 2015 15:59:35 +0800
+
 sanji-bundle-dhcpd (0.9.3) trusty; urgency=low
 
   * Fix Makefile
