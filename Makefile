@@ -8,7 +8,7 @@ ARCHIVE=$(CURDIR)/$(PROJECT)-$(VERSION).tar.gz
 
 SANJI_VER=1.0
 
-INSTALL_DIR=$(DESTDIR)/usr/lib/sanji-$(SANJI_VER)/$(PROJECT)
+INSTALL_DIR=$(DESTDIR)/usr/lib/sanji-$(SANJI_VER)/$(NAME)
 
 STAGING_DIR=$(CURDIR)/staging
 
