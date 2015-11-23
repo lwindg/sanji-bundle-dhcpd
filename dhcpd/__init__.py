@@ -73,6 +73,8 @@ subnet %(subnetIP)s netmask %(netmask)s {
         subnetIP = [_ for _ in ipv4.subnets(prefixlen_diff=0)][0]\
             .network_address
 
+        domainNameServers = [_ for _ in self["domainNameServers"]
+                             if len(_) > 0]
         subnet = {
             "name": self["name"],
             "subnetIP": subnetIP,
@@ -81,7 +83,7 @@ subnet %(subnetIP)s netmask %(netmask)s {
             "endIP": self["endIP"],
             "leaseTime": self["leaseTime"],
             "routers": routers,
-            "domainNameServers": ",".join(self["domainNameServers"]),
+            "domainNameServers": ",".join(domainNameServers),
             "domainNameString": "" if len(self["domainName"]) == 0
             else "option domain-name \"%s\"" % (self["domainName"])
         }
