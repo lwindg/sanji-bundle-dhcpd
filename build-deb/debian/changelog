@@ -1,3 +1,10 @@
+sanji-bundle-dhcpd (0.9.6) trusty; urgency=low
+
+  * Fix default values.
+  * TODO: Unit Tests.
+
+ -- Zack YL Shih <zackyl.shih@moxa.com>  Mon, 07 Dec 2015 16:29:34 +0800
+
 sanji-bundle-dhcpd (0.9.5) trusty; urgency=low
 
   * Fix domainNameString
