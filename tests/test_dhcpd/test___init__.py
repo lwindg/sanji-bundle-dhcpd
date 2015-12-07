@@ -14,12 +14,13 @@ from mock import call
 
 try:
     sys.path.append(os.path.dirname(os.path.realpath(__file__)) + "/../../")
-    from dhcp import DHCPD
-    from dhcp import Subnet
-    from dhcp import Service
+    from dhcpd import DHCPD
+    from dhcpd import Subnet
+    from dhcpd import Service
 except ImportError as e:
     print "Please check the python PATH for import test module. (%s)"\
            % __file__
+    print e
     exit(1)
 
 
@@ -40,11 +41,6 @@ class TestSubnetClass(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    @patch("dhcp.get_ip_by_interface")
-    def test__covert(self, get_ip_by_interface):
-        """"""
-        self.subnet._convert()
 
 
 if __name__ == "__main__":
