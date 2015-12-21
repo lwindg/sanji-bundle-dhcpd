@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (0.9.7) trusty; urgency=low
+
+  * Disable isc-dhcpd-server.
+
+ -- Zack YL Shih <zackyl.shih@moxa.com>  Mon, 21 Dec 2015 11:05:46 +0800
+
 sanji-bundle-dhcpd (0.9.6) trusty; urgency=low
 
   * Fix default values.
