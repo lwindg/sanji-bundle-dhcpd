@@ -24,6 +24,9 @@ case "$1" in
             pip install --no-index --find-links file:/tmp/packages \
                 -r /tmp/packages/requirements.txt
 	rm -rf /tmp/packages
+    if [ -x "/etc/init.d/isc-dhcp-server" ]; then
+        update-rc.d isc-dhcp-server disable >/dev/null
+    fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
