@@ -1,32 +1,29 @@
 {
   "name": "dhcpd",
-  "version": "1.0",
-  "author": "Jordan Chen",
-  "email": "jordan.chen@moxa.com",
-  "description": "Handle the dhcp server settings.",
+  "version": "0.9.7",
+  "author": "Zack YL Shih",
+  "email": "zackyl.shih@moxa.com",
+  "description": "DHCP Server configuration.",
   "license": "MOXA",
-  "main": "dhcpd.py",
+  "main": "index.py",
   "argument": "",
-  "priority": 45,
-  "hook": [
-    "ethernet"
-  ],
+  "priority": 99,
+  "hook": [],
   "dependencies": {},
   "repository": "",
   "role": "model",
   "ttl": 10,
   "resources": [
     {
-      "methods": [
-        "get"
-      ],
+      "role": "view",
+      "resource": "/network/interface"
+    },
+    {
+      "methods": "get",
       "resource": "/network/dhcpd"
     },
     {
-      "methods": [
-        "get",
-        "put"
-      ],
+      "methods": ["get", "put"],
       "resource": "/network/dhcpd/:id"
     }
   ]

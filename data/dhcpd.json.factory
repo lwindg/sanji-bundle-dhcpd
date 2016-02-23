@@ -1,52 +1,24 @@
-{
-	"collection": [
-		{
-			"id": 1,
-			"enable": 0,
-			"subnet": "",
-			"netmask": "",
-			"startIP": "",
-			"endIP": "",
-			"dns": [],
-			"name": "eth0",
-			"domainName": "",
-			"leaseTime": "3600"
-		},
-		{
-			"id": 2,
-			"enable": 0,
-			"subnet": "",
-			"netmask": "",
-			"startIP": "",
-			"endIP": "",
-			"dns": [],
-			"name": "eth1",
-			"domainName": "",
-			"leaseTime": "3600"
-		},
-		{
-			"id": 3,
-			"enable": 0,
-			"subnet": "",
-			"netmask": "",
-			"startIP": "",
-			"endIP": "",
-			"dns": [],
-			"name": "eth2",
-			"domainName": "",
-			"leaseTime": "3600"
-		},
-		{
-			"id": 4,
-			"enable": 0,
-			"subnet": "",
-			"netmask": "",
-			"startIP": "",
-			"endIP": "",
-			"dns": [],
-			"name": "eth3",
-			"domainName": "",
-			"leaseTime": "3600"
-		}
-	]
-}
+[
+  {
+    "id": 1,
+    "name": "eth0",
+    "enable": 0,
+    "netmask": "255.255.255.0",
+    "startIP": "192.168.3.200",
+    "endIP": "192.168.3.250",
+    "domainNameServers": ["8.8.8.8", "8.8.4.4"],
+    "domainName": "",
+    "leaseTime": 3600
+  },
+  {
+    "id": 2,
+    "name": "eth1",
+    "enable": 0,
+    "netmask": "255.255.255.0",
+    "startIP": "192.168.4.200",
+    "endIP": "192.168.4.250",
+    "domainNameServers": ["8.8.8.8", "8.8.4.4"],
+    "domainName": "",
+    "leaseTime": 3600
+  }
+]
