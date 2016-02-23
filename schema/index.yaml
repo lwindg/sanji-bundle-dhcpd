@@ -50,6 +50,12 @@ paths:
             }
 
     put:
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/DHCPServer'
       description: Update a dhcp server configuration
       responses:
         200:
@@ -152,7 +158,7 @@ externalDocs:
           "1.1.1.1",
           "2.2.2.2"
         ],
-        "domainName": "cloud 5566",
+        "domainName": "cloud5566",
         "leaseTime": "3600"
       }
 
