@@ -1,3 +1,10 @@
+sanji-bundle-dhcpd (1.0.0) trusty; urgency=low
+
+  * Add OpenAPI doc
+  * Change enable from 0/1 to bool
+
+ -- Zack YL Shih <zackyl.shih@moxa.com>  Tue, 23 Feb 2016 14:42:23 +0800
+
 sanji-bundle-dhcpd (0.9.7) trusty; urgency=low
 
   * Disable isc-dhcpd-server.
