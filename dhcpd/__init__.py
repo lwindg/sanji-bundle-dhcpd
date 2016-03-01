@@ -10,7 +10,7 @@ _logger = logging.getLogger("sanji.dhcpd")
 SUBNET_SCHEMA = Schema({
     "id": int,
     Required("name"): All(Any(unicode, str), Length(1, 255)),
-    Required("enable"): Any(0, 1),
+    Required("enable"): bool,
     Required("netmask"): All(Any(unicode, str), Length(7, 15)),
     Required("startIP"): All(Any(unicode, str), Length(7, 15)),
     Required("endIP"): All(Any(unicode, str), Length(7, 15)),
@@ -122,7 +122,7 @@ log-facility local7;
         """Update dhcpd.config and restart service if restart set to True"""
         subnets = []
         for subnet in self.getAll():
-            if subnet["enable"] == 0:
+            if subnet["enable"] is False:
                 continue
             subnets.append(subnet.to_config())
         dhcpd_config = self.DHCPD_TMPL + "\n\n".join(subnets)

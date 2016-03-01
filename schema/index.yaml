@@ -1,0 +1,187 @@
+swagger: '2.0'
+
+info:
+  title: DHCP Server API
+  description: DHCP Server management
+  version: '0.0.1'
+
+schemes:
+- http
+- https
+
+produces:
+- application/json
+
+paths:
+  /network/dhcpd:
+    get:
+      description: Get Overview of DHCP Server information
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: '#/definitions/DHCPServerCollection'
+          examples:
+            {
+              "application/json": {
+                $ref: '#/externalDocs/x-mocks/DHCPServerCollectionExample'
+              }
+            }
+
+  /network/dhcpd/{id}:
+    parameters:
+    - name: id
+      in: path
+      type: integer
+      required: true
+
+    get:
+      description: Get a dhcp server configuration
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: '#/definitions/DHCPServer'
+          examples:
+            {
+              "application/json": {
+                $ref: '#/externalDocs/x-mocks/DHCPServerExample'
+              }
+            }
+
+    put:
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/DHCPServer'
+      description: Update a dhcp server configuration
+      responses:
+        200:
+          description: success
+          schema:
+            $ref: '#/definitions/DHCPServer'
+          examples:
+            {
+              "application/json": {
+                $ref: '#/externalDocs/x-mocks/DHCPServerExample'
+              }
+            }
+
+definitions:
+  DHCPServer:
+    description: DHCP Server configuration
+    type: object
+    required:
+    - name
+    - enable
+    - netmask
+    - startIP
+    - endIP
+    - domainNameServers
+    - domainName
+    - leaseTime
+    properties:
+      name:
+        description: Name of dhcp server
+        type: string
+        minLength: 1
+        maxLength: 255
+      enable:
+        description: Enable dhcp server
+        type: boolean
+      netmask:
+        description: Netmask of dhcp server
+        type: string
+        minLength: 7
+        maxLength: 15
+      startIP:
+        description: Range IP start
+        type: string
+        minLength: 7
+        maxLength: 15
+      endIP:
+        description: Range IP end
+        type: string
+        minLength: 7
+        maxLength: 15
+      domainNameServers:
+        description: Domain name servers
+        type: array
+        items:
+          type: string
+          minLength: 7
+          maxLength: 15
+      domainName:
+        description: Domain name
+        type: string
+        maxLength: 255
+      leaseTime:
+        description: Lease time of dhcp pool
+        type: integer
+        minimum: 60
+        maximum: 65535
+    example:
+      $ref: '#/externalDocs/x-mocks/DHCPServerExample'
+
+  DHCPServerCollection:
+    description: Collection of DHCP Servers and overview status
+    type: object
+    readOnly: true
+    properties:
+      status:
+        description: DHCP Server is enable or not
+        type: boolean
+      collection:
+        description: All of dhcp server instance config
+        type: array
+        items:
+          $ref: '#/definitions/DHCPServer'
+    example:
+      $ref: '#/externalDocs/x-mocks/DHCPServerCollectionExample'
+
+externalDocs:
+  url: '#'
+  x-mocks:
+    DHCPServerExample:
+      {
+        "id": 1,
+        "name": "eth0",
+        "enable": 0,
+        "subnet": "192.168.3.0",
+        "netmask": "255.255.255.0",
+        "startIP": "192.168.3.100",
+        "endIP": "192.168.3.150",
+        "domainNameServers": [
+          "8.8.8.8",
+          "1.1.1.1",
+          "2.2.2.2"
+        ],
+        "domainName": "cloud5566",
+        "leaseTime": "3600"
+      }
+
+    DHCPServerCollectionExample:
+      {
+        "currentStatus": 1,
+        "collection": [
+          {
+            "id": 1,
+            "name": "eth0",
+            "enable": 0,
+            "subnet": "192.168.3.0",
+            "netmask": "255.255.255.0",
+            "startIP": "192.168.3.100",
+            "endIP": "192.168.3.150",
+            "domainNameServers": [
+              "8.8.8.8",
+              "1.1.1.1",
+              "2.2.2.2"
+            ],
+            "domainName": "cloud5566",
+            "leaseTime": "3600"
+          }
+        ]
+      }
+
