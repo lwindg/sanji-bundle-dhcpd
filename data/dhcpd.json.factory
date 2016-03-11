@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "eth0",
-    "enable": 0,
+    "enable": false,
     "netmask": "255.255.255.0",
     "startIP": "192.168.3.200",
     "endIP": "192.168.3.250",
@@ -13,7 +13,7 @@
   {
     "id": 2,
     "name": "eth1",
-    "enable": 0,
+    "enable": false,
     "netmask": "255.255.255.0",
     "startIP": "192.168.4.200",
     "endIP": "192.168.4.250",
