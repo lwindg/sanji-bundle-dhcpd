@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (1.0.1) trusty; urgency=low
+
+  * Update factory config.
+
+ -- Zack YL Shih <zackyl.shih@moxa.com>  Fri, 11 Mar 2016 16:07:21 +0800
+
 sanji-bundle-dhcpd (1.0.0) trusty; urgency=low
 
   * Add OpenAPI doc
