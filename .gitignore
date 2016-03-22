@@ -52,3 +52,9 @@ docs/_build/
 
 # PyBuilder
 target/
+
+staging/
+sanji-bundle-dhcpd*.tar.gz
+
+data/*.json
+data/*.json.backup
