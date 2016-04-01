@@ -22,7 +22,7 @@ class Index(Sanji):
     def get(self, message, response):
         status = self.dhcpd.service.status()
         return response(data={
-            "status": 1 if status == 0 else 0,
+            "status": True if status == 0 else False,
             "collection": self.dhcpd.getAll()
         })
 
