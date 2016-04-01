@@ -42,7 +42,7 @@ class Index(Sanji):
             return response(code=404)
         return response(data=data)
 
-    @Route(methods="put", resource="/network/interface/:ifname")
+    @Route(methods="put", resource="/network/interfaces/:ifname")
     def _event_interface_info(self, message):
         name = message.param["ifname"]
         deps = [iface for iface in self.dhcpd.getAll() if

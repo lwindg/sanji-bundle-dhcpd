@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (2.0.1) trusty; urgency=low
+
+  * Add the missing s.
+
+ -- Zack YL Shih <zackyl.shih@moxa.com>  Fri, 01 Apr 2016 11:31:43 +0800
+
 sanji-bundle-dhcpd (2.0.0) trusty; urgency=low
 
   * Update /network/interface/:ifname event routes.
