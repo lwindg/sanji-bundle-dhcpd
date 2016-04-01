@@ -164,7 +164,7 @@ externalDocs:
 
     DHCPServerCollectionExample:
       {
-        "currentStatus": 1,
+        "status": true,
         "collection": [
           {
             "id": 1,
