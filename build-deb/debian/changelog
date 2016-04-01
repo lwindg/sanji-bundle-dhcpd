@@ -1,3 +1,10 @@
+sanji-bundle-dhcpd (2.0.0) trusty; urgency=low
+
+  * Update /network/interface/:ifname event routes.
+  * Update schema example.
+
+ -- Zack YL Shih <zackyl.shih@moxa.com>  Fri, 01 Apr 2016 11:10:24 +0800
+
 sanji-bundle-dhcpd (1.0.1) trusty; urgency=low
 
   * Update factory config.
