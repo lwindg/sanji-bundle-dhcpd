@@ -37,7 +37,7 @@ extract-upstream:
 	tar zxf $(PROJ_DIR)/$(UPSTREAM_ARCHIVE)
 
 changelog:
-	dch -v $(VERSION)-$(DEBVERSION) -M -u low --release-heuristic log
+	dch -v $(VERSION) -M -u low --release-heuristic log
 
 clean:
 	rm -rf $(STAGING_DIR) $(PROJECT)-* $(PROJECT)_*

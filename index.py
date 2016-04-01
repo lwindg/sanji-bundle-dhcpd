@@ -51,9 +51,9 @@ class Index(Sanji):
         if len(deps) == 0:
             return
 
-        self.dhcpd.gererate_config()
+        self.dhcpd.update_service()
         self._logger.info(
-            "DHCP server is restarted. Due to %s setting had been chanaged" %
+            "DHCP server is restarted. Due to %s setting had been changed" %
             message.data["name"])
 
 
