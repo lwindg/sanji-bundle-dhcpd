@@ -16,7 +16,7 @@
   "resources": [
     {
       "role": "view",
-      "resource": "/network/interface"
+      "resource": "/network/interface/:ifname"
     },
     {
       "methods": "get",

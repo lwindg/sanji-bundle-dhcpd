@@ -42,13 +42,9 @@ class Index(Sanji):
             return response(code=404)
         return response(data=data)
 
-    @Route(methods="put", resource="/network/interface")
+    @Route(methods="put", resource="/network/interface/:ifname")
     def _event_interface_info(self, message):
-        if "name" not in message.data:
-            self._logger.debug("event: /network/interface has no key: name.")
-            return
-
-        name = message.data["name"]
+        name = message.param["ifname"]
         deps = [iface for iface in self.dhcpd.getAll() if
                 iface["enable"] == 1 and iface["name"] == name]
 
