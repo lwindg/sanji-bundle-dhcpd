@@ -12,8 +12,8 @@ SUBNET_SCHEMA = Schema({
     Required("name"): All(Any(unicode, str), Length(1, 255)),
     Required("enable"): bool,
     Required("netmask"): All(Any(unicode, str), Length(7, 15)),
-    Required("startIP"): All(Any(unicode, str), Length(7, 15)),
-    Required("endIP"): All(Any(unicode, str), Length(7, 15)),
+    Required("startIp"): All(Any(unicode, str), Length(7, 15)),
+    Required("endIp"): All(Any(unicode, str), Length(7, 15)),
     Required("domainNameServers"): [Any(unicode, str)],
     Required("domainName"): All(Any(unicode, str), Length(0, 255)),
     Required("leaseTime"): Range(min=60, max=65535)
@@ -56,7 +56,7 @@ class Service(object):
 class Subnet(dict):
     SUBNET_TMPL = """##################### %(name)s ########################
 subnet %(subnetIP)s netmask %(netmask)s {
-    range %(startIP)s %(endIP)s;
+    range %(startIp)s %(endIp)s;
     default-lease-time %(leaseTime)d;
     max-lease-time %(leaseTime)d;
     option domain-name-servers %(domainNameServers)s;
@@ -68,7 +68,7 @@ subnet %(subnetIP)s netmask %(netmask)s {
     def _convert(self):
         routers = get_ip_by_interface(self["name"])
         ipv4 = ipaddress.IPv4Network(
-            (unicode(self["startIP"]), self["netmask"]), strict=False)
+            (unicode(self["startIp"]), self["netmask"]), strict=False)
 
         subnetIP = [_ for _ in ipv4.subnets(prefixlen_diff=0)][0]\
             .network_address
@@ -79,8 +79,8 @@ subnet %(subnetIP)s netmask %(netmask)s {
             "name": self["name"],
             "subnetIP": subnetIP,
             "netmask": self["netmask"],
-            "startIP": self["startIP"],
-            "endIP": self["endIP"],
+            "startIp": self["startIp"],
+            "endIp": self["endIp"],
             "leaseTime": self["leaseTime"],
             "routers": routers,
             "domainNameServers": ",".join(domainNameServers),

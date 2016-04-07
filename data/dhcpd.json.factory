@@ -4,8 +4,8 @@
     "name": "eth0",
     "enable": false,
     "netmask": "255.255.255.0",
-    "startIP": "192.168.3.200",
-    "endIP": "192.168.3.250",
+    "startIp": "192.168.3.200",
+    "endIp": "192.168.3.250",
     "domainNameServers": ["8.8.8.8", "8.8.4.4"],
     "domainName": "",
     "leaseTime": 3600
@@ -15,8 +15,8 @@
     "name": "eth1",
     "enable": false,
     "netmask": "255.255.255.0",
-    "startIP": "192.168.4.200",
-    "endIP": "192.168.4.250",
+    "startIp": "192.168.4.200",
+    "endIp": "192.168.4.250",
     "domainNameServers": ["8.8.8.8", "8.8.4.4"],
     "domainName": "",
     "leaseTime": 3600
