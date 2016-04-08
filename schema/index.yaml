@@ -77,8 +77,8 @@ definitions:
     - name
     - enable
     - netmask
-    - startIP
-    - endIP
+    - startIp
+    - endIp
     - domainNameServers
     - domainName
     - leaseTime
@@ -96,12 +96,12 @@ definitions:
         type: string
         minLength: 7
         maxLength: 15
-      startIP:
+      startIp:
         description: Range IP start
         type: string
         minLength: 7
         maxLength: 15
-      endIP:
+      endIp:
         description: Range IP end
         type: string
         minLength: 7
@@ -151,8 +151,8 @@ externalDocs:
         "enable": 0,
         "subnet": "192.168.3.0",
         "netmask": "255.255.255.0",
-        "startIP": "192.168.3.100",
-        "endIP": "192.168.3.150",
+        "startIp": "192.168.3.100",
+        "endIp": "192.168.3.150",
         "domainNameServers": [
           "8.8.8.8",
           "1.1.1.1",
@@ -172,8 +172,8 @@ externalDocs:
             "enable": 0,
             "subnet": "192.168.3.0",
             "netmask": "255.255.255.0",
-            "startIP": "192.168.3.100",
-            "endIP": "192.168.3.150",
+            "startIp": "192.168.3.100",
+            "endIp": "192.168.3.150",
             "domainNameServers": [
               "8.8.8.8",
               "1.1.1.1",
