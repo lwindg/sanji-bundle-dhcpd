@@ -3,7 +3,7 @@
   "version": "3.0.0",
   "author": "Zack YL Shih",
   "email": "zackyl.shih@moxa.com",
-  "description": "DHCP Server configuration.",
+  "description": "Handles the DHCP Server configuration",
   "license": "MOXA",
   "main": "index.py",
   "argument": "",
