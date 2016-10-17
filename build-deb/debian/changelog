@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (3.0.1) trusty; urgency=low
+
+  * fix unicode output from `service _ status` issues.
+
+ -- Zack YL Shih <zackyl.shih@moxa.com>  Mon, 17 Oct 2016 14:58:51 +0800
+
 sanji-bundle-dhcpd (3.0.0) trusty; urgency=low
 
   * Change startIP to startIp, endIP to endIp.
