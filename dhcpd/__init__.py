@@ -39,8 +39,10 @@ class Service(object):
 
         def do_command(bg=False):
             try:
-                output = sh.service(
-                    self.service_name, command, _bg=bg, _no_out=True)
+                output = sh.systemctl(
+                    "--no-page", command,
+                    "{}.service".format(self.service_name),
+                    _bg=bg, _no_out=True)
                 self._logger.info(
                     "Service '%s' %s" % (self.service_name, command))
                 return output.exit_code
