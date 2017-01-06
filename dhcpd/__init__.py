@@ -11,6 +11,7 @@ SUBNET_SCHEMA = Schema({
     "id": int,
     Required("name"): All(Any(unicode, str), Length(1, 255)),
     Required("enable"): bool,
+    Required("available", default=False): bool,
     Required("netmask"): All(Any(unicode, str), Length(7, 15)),
     Required("startIp"): All(Any(unicode, str), Length(7, 15)),
     Required("endIp"): All(Any(unicode, str), Length(7, 15)),
@@ -121,6 +122,8 @@ log-facility local7;
         kwargs["model_cls"] = Subnet
         super(DHCPD, self).__init__(*args, **kwargs)
 
+        self.ifaces = []
+
     def update_service(self, restart=True):
         """Update dhcpd.config and restart service if restart set to True"""
         subnets = []
@@ -142,6 +145,15 @@ log-facility local7;
             return 0
 
         self.service.restart(bg=True)
+
+    def _is_available(self, iface):
+        if iface["wan"] is False and \
+                iface["mode"] == "static" and \
+                (iface["type"] == "eth" or \
+                 iface["type"] == "wifi-ap"):
+            return True
+        else:
+            return False
 
     def add(self, data):
         raise RuntimeError("Not support Add method")
@@ -165,3 +177,47 @@ log-facility local7;
         self.update_service()
 
         return newSubnet
+
+    def update_iface_info(self, data):
+        """Update the interface list.
+        available: eth.static, wifi-aplstatic
+        unavailable: eth.dhcp, wifi-client.static, wifi-client.dhcp, cellular
+
+            Args:
+                data: dict with interface name, type and mode
+
+            type: eth/wifi-ap/wifi-client/cellular
+            mode: static/dhcp
+            [
+                {
+                    "name": "eth0",
+                    "type": "eth",
+                    "mode": "static"
+                },
+                {
+                    "name": "wlan0",
+                    "type": "wifi-ap",
+                    "mode": "static"
+                }
+            ]
+        """
+
+        # update iface list
+        for iface in self.ifaces:
+            if iface["name"] == data["name"]:
+                iface = data
+        else:
+            self.ifaces.append(data)
+
+        # update config
+        for item in self.getAll():
+            if item["name"] == data["name"]:
+                enable = item["enable"]
+                item["available"] = self._is_available(data)
+                super(DHCPD, self).update(id=item["id"], newObj=item)
+                if enable is True or enable != item["enable"]:
+                    self.update_service()
+                    self._logger.info(
+                        "DHCP server is restarted. Due to {} setting had"
+                        "been changed".format(data["name"]))
+                break
