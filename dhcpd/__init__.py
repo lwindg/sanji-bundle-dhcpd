@@ -205,19 +205,21 @@ log-facility local7;
         # update iface list
         for iface in self.ifaces:
             if iface["name"] == data["name"]:
-                iface = data
+                iface.update(data)
+                break
         else:
-            self.ifaces.append(data)
+            iface = data
+            self.ifaces.append(iface)
 
         # update config
         for item in self.getAll():
-            if item["name"] == data["name"]:
+            if item["name"] == iface["name"]:
                 enable = item["enable"]
-                item["available"] = self._is_available(data)
+                item["available"] = self._is_available(iface)
                 super(DHCPD, self).update(id=item["id"], newObj=item)
                 if enable is True or enable != item["enable"]:
                     self.update_service()
                     self._logger.info(
                         "DHCP server is restarted. Due to {} setting had"
-                        "been changed".format(data["name"]))
+                        "been changed".format(iface["name"]))
                 break

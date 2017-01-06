@@ -7,7 +7,7 @@ import os
 from sanji.core import Sanji
 from sanji.core import Route
 from sanji.connection.mqtt import Mqtt
-from voluptuous import Schema, REMOVE_EXTRA, Required, In
+from voluptuous import Schema, REMOVE_EXTRA, Required, Optional, In
 from dhcpd import DHCPD
 
 
@@ -45,7 +45,7 @@ class Index(Sanji):
 
     IFACE_INFO = Schema(
         {
-            Required("wan"): bool,
+            Optional("wan"): bool,
             Required("type"):
                 In(frozenset(["eth", "wifi-ap", "wifi-client", "cellular"])),
             Required("mode"): In(frozenset(["static", "dhcp"]))
