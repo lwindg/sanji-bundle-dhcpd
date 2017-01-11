@@ -128,7 +128,7 @@ log-facility local7;
         """Update dhcpd.config and restart service if restart set to True"""
         subnets = []
         for subnet in self.getAll():
-            if subnet["enable"] is False:
+            if not self._is_enable(subnet):
                 continue
             subnets.append(subnet.to_config())
         dhcpd_config = self.DHCPD_TMPL + "\n\n".join(subnets)
@@ -149,8 +149,16 @@ log-facility local7;
     def _is_available(self, iface):
         if iface["wan"] is False and \
                 iface["mode"] == "static" and \
-                (iface["type"] == "eth" or \
+                (iface["type"] == "eth" or
                  iface["type"] == "wifi-ap"):
+            return True
+        else:
+            return False
+
+    def _is_enable(self, iface):
+        if "available" in iface and \
+                iface["available"] is True and \
+                iface["enable"] is True:
             return True
         else:
             return False
@@ -214,10 +222,10 @@ log-facility local7;
         # update config
         for item in self.getAll():
             if item["name"] == iface["name"]:
-                enable = item["enable"]
+                enable = self._is_enable(item)
                 item["available"] = self._is_available(iface)
                 super(DHCPD, self).update(id=item["id"], newObj=item)
-                if enable is True or enable != item["enable"]:
+                if enable != self._is_enable(item):
                     self.update_service()
                     self._logger.info(
                         "DHCP server is restarted. Due to {} setting had"
