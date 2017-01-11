@@ -10,6 +10,8 @@ from sanji.connection.mqtt import Mqtt
 from voluptuous import Schema, REMOVE_EXTRA, Required, Optional, In
 from dhcpd import DHCPD
 
+from traceback import format_exc
+
 
 class Index(Sanji):
     _logger = logging.getLogger("sanji.dhcpd.index")
@@ -55,7 +57,12 @@ class Index(Sanji):
     @Route(methods="put", resource="/network/interfaces/:ifname")
     def _event_interface_info(self, message):
         info = message.data
-        info = self.IFACE_INFO(info)
+        try:
+            info = self.IFACE_INFO(info)
+        except:
+            self._logger.warning(format_exc())
+            return
+
         info["name"] = message.param["ifname"]
         self.dhcpd.update_iface_info(info)
 
