@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (3.1.0) unstable; urgency=low
+
+  * Feat: Support `available` for DHCP server.
+
+ -- Aeluin Chen <aeluin.chen@moxa.com>  Tue, 17 Jan 2017 14:03:17 +0800
+
 sanji-bundle-dhcpd (3.0.2) trusty; urgency=low
 
   * Use `systemctl` instead of `service`.

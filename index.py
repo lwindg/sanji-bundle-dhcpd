@@ -7,7 +7,10 @@ import os
 from sanji.core import Sanji
 from sanji.core import Route
 from sanji.connection.mqtt import Mqtt
+from voluptuous import Schema, REMOVE_EXTRA, Required, Optional, In
 from dhcpd import DHCPD
+
+from traceback import format_exc
 
 
 class Index(Sanji):
@@ -42,19 +45,26 @@ class Index(Sanji):
             return response(code=404)
         return response(data=data)
 
+    IFACE_INFO = Schema(
+        {
+            Optional("wan"): bool,
+            Required("type"):
+                In(frozenset(["eth", "wifi-ap", "wifi-client", "cellular"])),
+            Required("mode"): In(frozenset(["static", "dhcp"]))
+        },
+        extra=REMOVE_EXTRA)
+
     @Route(methods="put", resource="/network/interfaces/:ifname")
     def _event_interface_info(self, message):
-        name = message.param["ifname"]
-        deps = [iface for iface in self.dhcpd.getAll() if
-                iface["enable"] == 1 and iface["name"] == name]
-
-        if len(deps) == 0:
+        info = message.data
+        try:
+            info = self.IFACE_INFO(info)
+        except:
+            self._logger.warning(format_exc())
             return
 
-        self.dhcpd.update_service()
-        self._logger.info(
-            "DHCP server is restarted. Due to %s setting had been changed" %
-            message.data["name"])
+        info["name"] = message.param["ifname"]
+        self.dhcpd.update_iface_info(info)
 
 
 if __name__ == "__main__":

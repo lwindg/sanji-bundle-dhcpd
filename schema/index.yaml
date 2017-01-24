@@ -83,6 +83,12 @@ definitions:
     - domainName
     - leaseTime
     properties:
+      avaliable:
+        readOnly: true
+        type: boolean
+        description: |
+          DHCP server is avaliable or not (the interface must be "static IP"
+          and/or worked as a WiFi AP), default should be false.
       name:
         description: Name of dhcp server
         type: string
@@ -148,6 +154,7 @@ externalDocs:
       {
         "id": 1,
         "name": "eth0",
+        "available": false,
         "enable": 0,
         "subnet": "192.168.3.0",
         "netmask": "255.255.255.0",
@@ -169,6 +176,7 @@ externalDocs:
           {
             "id": 1,
             "name": "eth0",
+            "available": false,
             "enable": 0,
             "subnet": "192.168.3.0",
             "netmask": "255.255.255.0",
