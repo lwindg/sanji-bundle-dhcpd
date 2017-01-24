@@ -156,8 +156,7 @@ log-facility local7;
             return False
 
     def _is_enable(self, iface):
-        if "available" in iface and \
-                iface["available"] is True and \
+        if iface.get("available", False) is True and \
                 iface["enable"] is True:
             return True
         else:
