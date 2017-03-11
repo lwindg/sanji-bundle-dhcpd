@@ -7,7 +7,7 @@
   "license": "MOXA",
   "main": "index.py",
   "argument": "",
-  "priority": 99,
+  "priority": 18,
   "hook": [],
   "dependencies": {},
   "repository": "",
