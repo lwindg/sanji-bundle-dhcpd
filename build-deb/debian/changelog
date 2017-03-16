@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (3.1.2) unstable; urgency=low
+
+  * docs: typo in schema
+
+ -- Aeluin Chen <aeluin.chen@moxa.com>  Thu, 16 Mar 2017 13:26:07 +0800
+
 sanji-bundle-dhcpd (3.1.1) unstable; urgency=low
 
   * fix: Adjust the priority (before ethernet/wifi).
