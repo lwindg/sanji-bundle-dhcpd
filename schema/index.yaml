@@ -83,11 +83,11 @@ definitions:
     - domainName
     - leaseTime
     properties:
-      avaliable:
+      available:
         readOnly: true
         type: boolean
         description: |
-          DHCP server is avaliable or not (the interface must be "static IP"
+          DHCP server is available or not (the interface must be "static IP"
           and/or worked as a WiFi AP), default should be false.
       name:
         description: Name of dhcp server
