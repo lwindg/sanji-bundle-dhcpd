@@ -1,3 +1,10 @@
+sanji-bundle-dhcpd (3.1.4) unstable; urgency=low
+
+  * fix: Add "status" to enable/disable dhcpd.
+  * fix: Crashed when failed to get IP.
+
+ -- Aeluin Chen <aeluin.chen@moxa.com>  Thu, 13 Apr 2017 19:39:17 +0800
+
 sanji-bundle-dhcpd (3.1.3) unstable; urgency=low
 
   * fix: "available" cannot be changed with PUT.
