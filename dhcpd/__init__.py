@@ -180,6 +180,8 @@ log-facility local7;
         if subnet is None:
             return None
 
+        # use previous status
+        newObj["available"] = subnet["available"]
         newSubnet = super(DHCPD, self).update(id=id, newObj=newObj)
         self.update_service()
 
@@ -226,7 +228,7 @@ log-facility local7;
                 super(DHCPD, self).update(id=item["id"], newObj=item)
                 if enable != self._is_enable(item):
                     self.update_service()
-                    self._logger.info(
+                    _logger.info(
                         "DHCP server is restarted. Due to {} setting had"
                         "been changed".format(iface["name"]))
                 break
