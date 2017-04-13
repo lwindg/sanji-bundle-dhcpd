@@ -48,6 +48,7 @@ class Index(Sanji):
     IFACE_INFO = Schema(
         {
             Optional("wan"): bool,
+            Required("status", default=True): bool,
             Required("type"):
                 In(frozenset(["eth", "wifi-ap", "wifi-client", "cellular"])),
             Required("mode"): In(frozenset(["static", "dhcp"]))

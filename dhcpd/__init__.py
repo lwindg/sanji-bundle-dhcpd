@@ -147,7 +147,8 @@ log-facility local7;
         self.service.restart(bg=True)
 
     def _is_available(self, iface):
-        if iface["wan"] is False and \
+        if iface["status"] is True and \
+                iface["wan"] is False and \
                 iface["mode"] == "static" and \
                 (iface["type"] == "eth" or
                  iface["type"] == "wifi-ap"):
@@ -201,12 +202,14 @@ log-facility local7;
                 {
                     "name": "eth0",
                     "type": "eth",
-                    "mode": "static"
+                    "mode": "static",
+                    "status": True
                 },
                 {
                     "name": "wlan0",
                     "type": "wifi-ap",
-                    "mode": "static"
+                    "mode": "static",
+                    "status": False
                 }
             ]
         """
@@ -226,9 +229,8 @@ log-facility local7;
                 enable = self._is_enable(item)
                 item["available"] = self._is_available(iface)
                 super(DHCPD, self).update(id=item["id"], newObj=item)
-                if enable != self._is_enable(item):
-                    self.update_service()
-                    _logger.info(
-                        "DHCP server is restarted. Due to {} setting had"
-                        "been changed".format(iface["name"]))
+                self.update_service(self._is_enable(item))
+                _logger.info(
+                    "DHCP server is restarted. Due to {} setting had"
+                    "been changed".format(iface["name"]))
                 break
