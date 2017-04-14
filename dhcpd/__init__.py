@@ -22,10 +22,14 @@ SUBNET_SCHEMA = Schema({
 
 
 def get_ip_by_interface(iface):
-    ip = sh.awk(
-        sh.grep(sh.grep(sh.ip("addr", "show", iface), "inet"),
-                "-v", "inet6"), "{print $2}").split("/")[0]
-    return ip
+    try:
+        ip = sh.awk(
+            sh.grep(sh.grep(sh.ip("addr", "show", iface), "inet"),
+                    "-v", "inet6"), "{print $2}").split("/")[0]
+        return ip
+    # the interface may not ready for configure DHCP server
+    except:
+        return None
 
 
 class Service(object):
@@ -71,6 +75,8 @@ subnet %(subnetIP)s netmask %(netmask)s {
 
     def _convert(self):
         routers = get_ip_by_interface(self["name"])
+        if not routers:
+            return None
         ipv4 = ipaddress.IPv4Network(
             (unicode(self["startIp"]), self["netmask"]), strict=False)
 
@@ -96,7 +102,9 @@ subnet %(subnetIP)s netmask %(netmask)s {
 
     def to_config(self):
         subnet = self._convert()
-        return self.SUBNET_TMPL % (subnet)
+        if subnet:
+            return self.SUBNET_TMPL % (subnet)
+        return None
 
 
 class DHCPD(Model):
@@ -130,7 +138,9 @@ log-facility local7;
         for subnet in self.getAll():
             if not self._is_enable(subnet):
                 continue
-            subnets.append(subnet.to_config())
+            config = subnet.to_config()
+            if config:
+                subnets.append(config)
         dhcpd_config = self.DHCPD_TMPL + "\n\n".join(subnets)
 
         with open(self.DHCPD_CONFIG, "w") as f:
