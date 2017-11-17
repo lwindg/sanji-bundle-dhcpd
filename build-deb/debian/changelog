@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (3.1.4) xenial; urgency=low
+
+  * fix: DHCP server may not restart.
+
+ -- Aeluin Chen <aeluin.chen@moxa.com>  Tue, 26 Sep 2017 15:33:04 +0800
+
 sanji-bundle-dhcpd (3.1.3) unstable; urgency=low
 
   * fix: "available" cannot be changed with PUT.

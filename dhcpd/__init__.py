@@ -226,9 +226,8 @@ log-facility local7;
                 enable = self._is_enable(item)
                 item["available"] = self._is_available(iface)
                 super(DHCPD, self).update(id=item["id"], newObj=item)
-                if enable != self._is_enable(item):
-                    self.update_service()
-                    _logger.info(
-                        "DHCP server is restarted. Due to {} setting had"
-                        "been changed".format(iface["name"]))
+                self.update_service()
+                _logger.info(
+                    "DHCP server is restarted. Due to {} setting had"
+                    "been changed".format(iface["name"]))
                 break
