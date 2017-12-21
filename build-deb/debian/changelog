@@ -1,4 +1,10 @@
-sanji-bundle-dhcpd (3.1.4) xenial; urgency=low
+sanji-bundle-dhcpd (3.1.5) unstable; urgency=low
+
+  * fix: add package name as prefix for temp folder.
+
+ -- Zack YL Shih <zackyl.shih@moxa.com>  Thu, 21 Dec 2017 15:55:25 +0800
+
+sanji-bundle-dhcpd (3.1.4) unstable; urgency=low
 
   * fix: DHCP server may not restart.
 
