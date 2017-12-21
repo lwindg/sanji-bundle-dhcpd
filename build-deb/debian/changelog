@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (3.1.6) unstable; urgency=low
+
+  * fix: postinst path.
+
+ -- Zack YL Shih <zackyl.shih@moxa.com>  Thu, 21 Dec 2017 16:48:57 +0800
+
 sanji-bundle-dhcpd (3.1.5) unstable; urgency=low
 
   * fix: add package name as prefix for temp folder.
