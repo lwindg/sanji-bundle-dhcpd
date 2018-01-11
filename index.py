@@ -19,7 +19,6 @@ class Index(Sanji):
     def init(self, *args, **kwargs):
         path_root = os.path.abspath(os.path.dirname(__file__))
         self.dhcpd = DHCPD(name="dhcpd", path=path_root)
-        self.dhcpd.update_service()
 
     @Route(methods="get", resource="/network/dhcpd")
     def get(self, message, response):
