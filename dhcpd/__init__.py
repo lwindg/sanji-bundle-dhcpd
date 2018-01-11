@@ -30,19 +30,39 @@ def get_ip_by_interface(iface):
 
 class Service(object):
     _logger = logging.getLogger("sanji.dhcpd.service")
+    _commands = ["start", "restart", "stop", "status", "daemon_reload", "is_installed"]
 
     def __init__(self, service_name):
         self.service_name = service_name
 
     def __getattr__(self, command):
-        if command not in ["start", "restart", "stop", "status"]:
+        if command not in self._commands:
             return super(Service, self).__getattr__(command)
+        elif command == "is_installed":
+            def is_installed(bg=False):
+                try:
+                    sh.grep(
+                        sh.systemctl(
+                            "--no-page",
+                            "list-unit-files",
+                            _bg=bg,
+                            _piped=True),
+                        self.service_name)
+                    return True
+                except:
+                    return False
+            return is_installed
+        elif command in ["daemon_reload"]:
+            args = []
+        elif command in ["start", "restart", "stop", "status"]:
+            args=[
+                "--no-page",
+                command,
+                "{}.service".format(self.service_name)]
 
         def do_command(bg=False):
             try:
-                output = sh.systemctl(
-                    "--no-page", command,
-                    "{}.service".format(self.service_name),
+                output = sh.systemctl(args,
                     _bg=bg, _no_out=True)
                 self._logger.info(
                     "Service '%s' %s" % (self.service_name, command))
