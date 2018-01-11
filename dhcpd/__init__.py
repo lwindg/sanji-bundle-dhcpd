@@ -268,13 +268,13 @@ log-facility local7;
             self.ifaces.append(iface)
 
         # update config
-        for item in self.getAll():
-            if item["name"] == iface["name"]:
-                enable = self._is_enable(item)
-                item["available"] = self._is_available(iface)
-                super(DHCPD, self).update(id=item["id"], newObj=item)
-                self.update_service()
+        for subnet in self.getAll():
+            if subnet["name"] == iface["name"]:
+                enable = self._is_enable(subnet)
+                subnet["available"] = self._is_available(iface)
+                super(DHCPD, self).update(id=subnet["id"], newObj=subnet)
+                self.update_service(subnet)
                 _logger.info(
-                    "DHCP server is restarted. Due to {} setting had"
+                    "DHCP server for {} is restarted for setting had"
                     "been changed".format(iface["name"]))
                 break
