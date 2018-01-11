@@ -97,6 +97,9 @@ definitions:
       enable:
         description: Enable dhcp server
         type: boolean
+      status:
+        description: DHCP Server is enable for the interface or not
+        type: boolean
       netmask:
         description: Netmask of dhcp server
         type: string
@@ -156,6 +159,7 @@ externalDocs:
         "name": "eth0",
         "available": false,
         "enable": false,
+        "status": false,
         "subnet": "192.168.3.0",
         "netmask": "255.255.255.0",
         "startIp": "192.168.3.100",
@@ -178,6 +182,7 @@ externalDocs:
             "name": "eth0",
             "available": false,
             "enable": false,
+            "status": false,
             "subnet": "192.168.3.0",
             "netmask": "255.255.255.0",
             "startIp": "192.168.3.100",
