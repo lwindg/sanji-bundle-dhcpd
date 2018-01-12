@@ -155,7 +155,7 @@ log-facility local7;
         self.ifaces = []
         self.services = {}
 
-        for subnet in self.getAll():
+        for subnet in self._getAll():
             self.services[subnet["name"]] = \
                 Service("isc-dhcp-server-{}".format(subnet["name"]))
             if self.services[subnet["name"]].is_installed() is False:
@@ -184,7 +184,7 @@ log-facility local7;
 
     def update_services(self, restart=True):
         """Update dhcpd.config and restart service if restart set to True"""
-        for subnet in self.getAll():
+        for subnet in self._getAll():
             self.update_service(subnet, restart)
 
     def _is_available(self, iface):
@@ -208,6 +208,17 @@ log-facility local7;
         subnet["status"] = True if self.services[subnet["name"]].status() == 0 \
             else False
         return subnet
+
+    def _getAll(self):
+        return super(DHCPD, self).getAll()
+
+    def getAll(self):
+        subnets = super(DHCPD, self).getAll()
+        for subnet in subnets:
+            subnet["status"] = True \
+                if self.services[subnet["name"]].status() == 0 \
+                else False
+        return subnets
 
     def add(self, data):
         raise RuntimeError("Not support Add method")
@@ -268,7 +279,7 @@ log-facility local7;
             self.ifaces.append(iface)
 
         # update config
-        for subnet in self.getAll():
+        for subnet in self._getAll():
             if subnet["name"] == iface["name"]:
                 enable = self._is_enable(subnet)
                 subnet["available"] = self._is_available(iface)
