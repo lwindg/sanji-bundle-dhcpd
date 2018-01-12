@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (3.2.0) xenial; urgency=low
+
+  * fix: activate dhcpd by interfaces.
+
+ -- Aeluin Chen <aeluin.chen@moxa.com>  Fri, 12 Jan 2018 09:28:36 +0800
+
 sanji-bundle-dhcpd (3.1.7) unstable; urgency=low
 
   * chore: add requirements.txt for test.
