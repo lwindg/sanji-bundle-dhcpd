@@ -1,3 +1,9 @@
+sanji-bundle-dhcpd (3.2.1) xenial; urgency=low
+
+  * fix: get `actualIface` if exist.
+
+ -- Aeluin Chen <aeluin.chen@moxa.com>  Sat, 20 Jan 2018 14:55:16 +0800
+
 sanji-bundle-dhcpd (3.2.0) xenial; urgency=low
 
   * fix: activate dhcpd by interfaces.

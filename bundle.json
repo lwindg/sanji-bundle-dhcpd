@@ -1,6 +1,6 @@
 {
   "name": "dhcpd",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "author": "Zack YL Shih",
   "email": "zackyl.shih@moxa.com",
   "description": "Handles the DHCP Server configuration",
