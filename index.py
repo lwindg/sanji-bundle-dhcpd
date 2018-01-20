@@ -7,7 +7,8 @@ import os
 from sanji.core import Sanji
 from sanji.core import Route
 from sanji.connection.mqtt import Mqtt
-from voluptuous import Schema, REMOVE_EXTRA, Required, Optional, In
+from voluptuous import Schema, REMOVE_EXTRA, Required, Optional, In, Any, \
+    Length
 from dhcpd import DHCPD
 
 from traceback import format_exc
@@ -49,7 +50,9 @@ class Index(Sanji):
             Optional("wan"): bool,
             Required("type"):
                 In(frozenset(["eth", "wifi-ap", "wifi-client", "cellular"])),
-            Required("mode"): In(frozenset(["static", "dhcp"]))
+            Required("mode"): In(frozenset(["static", "dhcp"])),
+            Optional("name"): Any(str, unicode, Length(1, 255)),
+            Optional("actualIface"): Any(str, unicode, Length(1, 255))
         },
         extra=REMOVE_EXTRA)
 
@@ -62,7 +65,15 @@ class Index(Sanji):
             self._logger.warning(format_exc())
             return
 
-        info["name"] = message.param["ifname"]
+        try:
+            name = message.data.get(
+                "actualIface",
+                message.data.get("interface", message.param["ifname"]))
+        except:
+            self._logger.error(
+                "no interface specified: {}".format(message.data))
+            return
+        info["name"] = name
         self.dhcpd.update_iface_info(info)
 
 
